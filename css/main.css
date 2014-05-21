@@ -22,8 +22,7 @@
 .h80{height:795px}
 .h90{height:895px}
 
-.container{width:900px; margin-left:auto; margin-right:auto}
-.chip{float:left; margin-right:5px; margin-bottom:5px}
+
 /* 颜色 */
 .blue{background-color:#00F}
 .chartreuse{background-color:#7FFF00}
@@ -37,4 +36,9 @@
 .springgreen{background-color:#00FF7F}
 .yellow{background-color:#FF0}
 
-body{margin-top:0px; background-color:#4B0082}
+body{margin-top:0px; background-color:#4B0082; font-family:"微软雅黑"}
+div.container{width:900px; margin-left:auto; margin-right:auto}
+div.chip{float:left; margin-right:5px; margin-bottom:5px; position:relative}
+span.areaname{font-size:16px}
+span.chiptext{position:absolute; bottom:5px; right:5px; color:#FFF}
+span.videotitle{position:absolute; bottom:5px; text-align:center}
