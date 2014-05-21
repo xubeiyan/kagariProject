@@ -2,14 +2,17 @@
 include_once('config/siteconfig.php');
 class View {
 	// 渲染某个模板
-	public static function display($target = '') {
+	public static function display($target = '', $replace = array()) {
 		if($target != ''){
 			$filepath = "templates/". $target .".html";
 			if (file_exists($filepath) == FALSE) {
-				echo ('找不到templates/index.html');
+				echo ('找不到templates/'. $target .'.html');
 				exit();
 			}
 			$file = file_get_contents($filepath);
+			foreach ($replace as $from => $to) {
+				$file = str_replace($from, $to, $file);
+			}
 			return $file;
 		}
 	}

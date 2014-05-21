@@ -1,19 +1,40 @@
-.h10{height:100px};
-.h20{height:200px};
-.h30{height:300px};
-.h40{height:400px};
-.h50{height:500px};
-.h60{height:600px};
-.h70{height:700px};
-.h80{height:800px};
-.h90{height:900px};
+.wp5{width:45px}
+.w10{width:95px}
+.w20{width:195px}
+.w30{width:295px}
+.w40{width:395px}
+.w50{width:495px}
+.w60{width:595px}
+.w70{width:695px}
+.w75{width:745px}
+.w80{width:795px}
+.w90{width:895px}
+.hp5{height:45px}
+.h10{height:95px}
+.h15{height:145px}
+.h20{height:195px}
+.h30{height:295px}
+.h40{height:395px}
+.h50{height:495px}
+.h60{height:595px}
+.h70{height:695px}
+.h75{height:745px}
+.h80{height:795px}
+.h90{height:895px}
 
-.w10{width:100px};
-.w20{width:200px};
-.w30{width:300px};
-.w40{width:400px};
-.w50{width:500px};
-.w60{width:600px};
-.w70{width:700px};
-.w80{width:800px};
-.w90{width:900px};
+.container{width:900px; margin-left:auto; margin-right:auto}
+.chip{float:left; margin-right:5px; margin-bottom:5px}
+/* 颜色 */
+.blue{background-color:#00F}
+.chartreuse{background-color:#7FFF00}
+.darkseagreen{background-color:#8FBC8F}
+.dodgerblue{background-color:#1E90FF}
+.deepskyblue{background-color:#00BFFF}
+.green{background-color:#080}
+.indigo{background-color:#4B0082}
+.red{background-color:#F00}
+.skyblue{background-color:#87CEEB}
+.springgreen{background-color:#00FF7F}
+.yellow{background-color:#FF0}
+
+body{margin-top:0px; background-color:#4B0082}
