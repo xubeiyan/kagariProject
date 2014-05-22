@@ -27,18 +27,23 @@
 .blue{background-color:#00F}
 .chartreuse{background-color:#7FFF00}
 .darkseagreen{background-color:#8FBC8F}
+.darkturquoise{background-color:#00CED1}
 .dodgerblue{background-color:#1E90FF}
 .deepskyblue{background-color:#00BFFF}
+.forestgreen{background-color:#228B22}
 .green{background-color:#080}
+.gold{background-color:#FFD700}
+.hotpink{background-color:#FF69B4}
 .indigo{background-color:#4B0082}
 .red{background-color:#F00}
 .skyblue{background-color:#87CEEB}
 .springgreen{background-color:#00FF7F}
 .yellow{background-color:#FF0}
 
-body{margin-top:0px; background-color:#4B0082; font-family:"微软雅黑"}
+body{margin-top:20px; background-color:#4B0082; font-family:"微软雅黑"}
 div.container{width:900px; margin-left:auto; margin-right:auto}
 div.chip{float:left; margin-right:5px; margin-bottom:5px; position:relative}
+p.description{margin:5px; padding:0; font-size:14px; color:#FFF}
 span.areaname{font-size:16px}
 span.chiptext{position:absolute; bottom:5px; right:5px; color:#FFF}
-span.videotitle{position:absolute; bottom:5px; text-align:center}
+span.videotitle{left:10px; color:#000; font-size:20px}
