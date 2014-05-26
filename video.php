@@ -11,7 +11,11 @@
 			'{vid}' => $vid
 		);
 		$page .= View::display('video', $replace);
-		$page .= View::display('footer');
+		$replace = array(
+			'{timestamp}' => View::timestamp()
+		);
+		$page .= View::display('footer', $replace);
+		
 		$page .= View::foot();
 	} else {
 		echo '找不到视频id为'. $vid . '的视频！';

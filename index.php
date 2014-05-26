@@ -5,7 +5,10 @@
 	$page .= View::head('主页');
 	$page .= View::display('header');
 	$page .= View::display('index');
-	$page .= View::display('footer');
+	$replace = array(
+		'{timestamp}' => View::timestamp()
+	);
+	$page .= View::display('footer',$replace);
 	$page .= View::foot();
 	echo $page;
 ?>

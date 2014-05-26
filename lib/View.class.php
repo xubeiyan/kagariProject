@@ -39,5 +39,15 @@ class View {
 				'</html>';
 		return $page;
 	}
+	
+	// 时间
+	public static function timestamp() {
+		global $siteconfig;
+		$weekday = $siteconfig['weekday'];
+		$timeformat = $siteconfig['timeformat'];
+		$timestring = date($timeformat);
+		$timestring .= $weekday[date('w')];
+		return $timestring;
+	}
 }
 ?>
