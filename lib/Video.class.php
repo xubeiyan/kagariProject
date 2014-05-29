@@ -4,12 +4,13 @@
 	*
 	*/
 	class Video {
-		private $vid;
-		private $upid;
-		private $playTime;
-		private $point;
-		private $title;
-		private $description;
+		private $vid;			//视频VID
+		private $upid;			//上传人ID
+		private $playTime;		//播放次数
+		private $point;			//评分
+		private $type;			//视频分区
+		private $title;			//视频标题
+		private $description;	//视频简介
 		
 		public function __construct($title, $description) {
 			$this -> $title = $title;
@@ -23,13 +24,18 @@
 			$sqlQuery = sprintf("CREATE TABLE video (
 								ID int NOT NULL AUTO_INCREMENT,
 								PRIMARY KEY(ID),
-								upuid int,
-								playtime int,
-								point int,
-								title char(255),
-								description text
+								upuid int default 0,
+								playtime int default 0,
+								type int default 0,
+								point int default 0,
+								title char(255) character set utf8,
+								description text character set utf8
 								)");
-			mysql_query($sqlQuery. $con);
+			if(mysql_query($sqlQuery, $GLOBALS['sql'])) {
+				echo "table created";
+			} else {
+				echo mysql_error();
+			};
 		}
 		
 		/*

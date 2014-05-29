@@ -5,8 +5,9 @@
 	*/
 	include 'config.php';
 	
-	$con = mysql_connect($database['host'], $database['user'], $database['pass']);
-	if (!$con) {
+	$GLOBALS['sql'] = mysql_connect($database['host'], $database['user'], $database['pass']);
+	if (!$GLOBALS['sql']) {
 		die('无法连接到MySQL数据库……');
 	}
+	mysql_query('use ' . $database['dbName'], $GLOBALS['sql']);
 ?>

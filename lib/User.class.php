@@ -12,15 +12,34 @@
 		/*
 		*	构造函数
 		*/
-		function __construct() {
+		public function __construct() {
 			$username = '';
 			$nickname = '';
 			$signature = '';
 		}
 		/*
+		*	新建user表
+		*/
+		public static function createUserTable() {
+			$sqlQuery = sprintf("CREATE TABLE user (
+								ID int NOT NULL AUTO_INCREMENT,
+								PRIMARY KEY(ID),
+								username char(63),
+								password char(255),
+								type int default 0,
+								point int default 0
+								)");
+			if(mysql_query($sqlQuery, $GLOBALS['sql'])) {
+				echo "table created";
+			} else {
+				echo mysql_error();
+			};
+		}
+		
+		/*
 		*	获取私有属性
 		*/
-		function __get($property_name){
+		public function __get($property_name){
 			if(isset($this -> $property_name)) {
 				return $this -> $property_name;
 			} else {
@@ -30,7 +49,7 @@
 		/*
 		*	设置私有属性
 		*/
-		function __set($property_name, $value){
+		public function __set($property_name, $value){
 			$this -> $property_name = $value;
 		}
 		/*
@@ -48,4 +67,4 @@
 			
 		}
 	}
->
+?>
