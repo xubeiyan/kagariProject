@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<body>
+<video id="video1" src="video/seikoku.flv" style="position:fixed; left:-2000px">
+...
+</video>
+
+<canvas id="myCanvas" width="800" height="600" style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML5 canvas tag.
+</canvas>
+<div onclick="play()">play</div>
+<script>
+
+var v = document.getElementById("video1");
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext('2d');
+var playing = false;
+var requestID;
+
+
+function play() {
+	if (playing === false) {
+		v.play();
+		refresh();
+		playing = true;
+	} else {
+		v.pause();
+		cancelAnimationFrame(requestID);
+		playing = false;
+	}
+}
+function refresh() {
+	var width = c.clientWidth,
+		height = v.clientHeight / v.clientWidth * width,
+		x = 0,
+		y = c.clientHeight / 2 - height / 2;
+	ctx.drawImage(v, x, y, width, height);
+	requestID = requestAnimationFrame(refresh);
+}
+</script>
+
+</body>
+</html>
