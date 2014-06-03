@@ -5,14 +5,17 @@
 ...
 </video>
 
-<canvas id="myCanvas" width="800" height="600" style="border:1px solid #d3d3d3;">
+<canvas id="myCanvas" width="800" height="600" style="border:0px solid #d3d3d3;">
 Your browser does not support the HTML5 canvas tag.
 </canvas>
-<div onclick="play()">play</div>
+<br />
+<span id="playtime"></span>
+<input type="button" onclick="play()" value="play" />
 <script>
 
-var v = document.getElementById("video1");
-var c = document.getElementById("myCanvas");
+var v = document.getElementById("video1"),
+	c = document.getElementById("myCanvas"),
+	playtime = document.getElementById("playtime");
 var ctx = c.getContext('2d');
 var playing = false;
 var requestID;
@@ -29,11 +32,22 @@ function play() {
 		playing = false;
 	}
 }
+
+function minsec(time) {
+	var minute = time > 60 ? parseInt(time / 60) : 0,
+		second = parseInt(time - 60 * minute);
+	minute = minute >= 10 ? minute : '0' + minute;
+	second = second >= 10 ? second : '0' + second;
+	return minute + ':' + second;
+}
+
 function refresh() {
 	var width = c.clientWidth,
 		height = v.clientHeight / v.clientWidth * width,
 		x = 0,
-		y = c.clientHeight / 2 - height / 2;
+		y = 0;
+	c.height = height;
+	playtime.innerText = minsec(v.currentTime);
 	ctx.drawImage(v, x, y, width, height);
 	requestID = requestAnimationFrame(refresh);
 }
