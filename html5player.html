@@ -1,57 +1,47 @@
 <!DOCTYPE html>
 <html>
+<head>
+<style type="text/css">
+body{font-family:"微软雅黑"}
+/* 主窗体 */
+div#main {width:800px; height:600px; position:relative}
+div#barrageslot {width:800px; height:25px; position:relative}
+div#barrageoption {width:25px; height:25px; float:left; background-color:#0FF; text-align:center; line-height:25px; font-size:18px; cursor:pointer}
+div#barrageslot div#barrageoptionpanel {width:300px; height:200px; position:absolute; left:0px; bottom:25px; background-color:#CED; display:none}
+div#barrageslot input#message{width:673px; height:25px; padding:0 0 0 2px; border:0; background-color:#DEF; font-size:20px; float:left}
+div#barrageslot div#send{width:100px; height:25px; background-color:#FED; font-size:18px; text-align:center; line-height:25px; float:left; cursor:pointer}
+div#controls {width:800px; height:25px}
+div#controls div#play{width:50px; height:25px; background-color:#CCC; text-align:center; line-height:25px;float:left; cursor:pointer}
+div#controls div#playtime{width:150px; height:25px; background-color:#EEE; text-align:center; line-height:25px;float:left}
+div#controls canvas#timeline{float:left}
+</style>
+</head>
 <body>
-<video id="video1" src="video/seikoku.flv" style="position:fixed; left:-2000px">
+<video id="videosrc" src="video/seikoku.flv" style="position:fixed; left:-2000px" preload="auto">
 ...
 </video>
-
-<canvas id="myCanvas" width="800" height="600" style="border:0px solid #d3d3d3;">
-Your browser does not support the HTML5 canvas tag.
+<div id="main">
+	<div style="position:absolute; left:opx; top:0px; width:800px; height:600px; background-color:#000"></div>
+	<canvas id="video" width="800" height="600" style="position:absolute; left:0px; top:0px">
+	Your browser does not support the HTML5 canvas tag.
+	</canvas>
+	<canvas id="barrage" width="800" height="600" style="position:absolute; left:0px; top:0px" onclick=p.play()>
+	Your browser does not support the HTML5 canvas tag.
 </canvas>
-<br />
-<span id="playtime"></span>
-<input type="button" onclick="play()" value="play" />
-<script>
+</div>
+<div id="barrageslot">
+	<div id="barrageoptionpanel" onmouseout=panel('barrageoptionpanel','hide') onmouseover=panel('barrageoptionpanel','display')></div>
+	<div id="barrageoption" onmouseout=panel('barrageoptionpanel','hide') onmouseover=panel('barrageoptionpanel','display')>设</div>
+	<input id="message" type="text" name="message" />
+	<div id="send" title="毁灭的喷射白光！哒————">发送</div>
+</div>
+<div id="controls">
+	<div id="play" onclick=p.play()>play</div>
+	<canvas id="timeline" width="600px" height="25px"></canvas>
+	<div id="playtime"></div>
+</div>
+<script src="js/barrageplayer.js"></script>
 
-var v = document.getElementById("video1"),
-	c = document.getElementById("myCanvas"),
-	playtime = document.getElementById("playtime");
-var ctx = c.getContext('2d');
-var playing = false;
-var requestID;
-
-
-function play() {
-	if (playing === false) {
-		v.play();
-		refresh();
-		playing = true;
-	} else {
-		v.pause();
-		cancelAnimationFrame(requestID);
-		playing = false;
-	}
-}
-
-function minsec(time) {
-	var minute = time > 60 ? parseInt(time / 60) : 0,
-		second = parseInt(time - 60 * minute);
-	minute = minute >= 10 ? minute : '0' + minute;
-	second = second >= 10 ? second : '0' + second;
-	return minute + ':' + second;
-}
-
-function refresh() {
-	var width = c.clientWidth,
-		height = v.clientHeight / v.clientWidth * width,
-		x = 0,
-		y = 0;
-	c.height = height;
-	playtime.innerText = minsec(v.currentTime);
-	ctx.drawImage(v, x, y, width, height);
-	requestID = requestAnimationFrame(refresh);
-}
-</script>
 
 </body>
 </html>
