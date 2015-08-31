@@ -1,23 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="utf-8" />
+<title>No zuo no die why you try?</title>
 <style type="text/css">
 body{font-family:"微软雅黑"}
 /* 主窗体 */
 div#main {width:800px; height:600px; position:relative}
+
 div#barrageslot {width:800px; height:25px; position:relative}
-div#barrageoption {width:25px; height:25px; float:left; background-color:#0FF; text-align:center; line-height:25px; font-size:18px; cursor:pointer}
+
+div#barrageoption {width:50px; height:25px; float:left; background-color:#0FF; text-align:center; line-height:25px; font-size:18px; cursor:pointer}
+
 div#barrageslot div#barrageoptionpanel {width:300px; height:200px; position:absolute; left:0px; bottom:25px; background-color:#CED; display:none}
+
 div#barrageslot input#message{width:673px; height:25px; padding:0 0 0 2px; border:0; background-color:#DEF; font-size:20px; float:left}
-div#barrageslot div#send{width:100px; height:25px; background-color:#FED; font-size:18px; text-align:center; line-height:25px; float:left; cursor:pointer}
+
+div#barrageslot div#send{width:75px; height:25px; background-color:#FED; font-size:18px; text-align:center; line-height:25px; float:left; cursor:pointer}
+
 div#controls {width:800px; height:25px}
+
 div#controls div#play{width:50px; height:25px; background-color:#CCC; text-align:center; line-height:25px;float:left; cursor:pointer}
+
 div#controls div#playtime{width:150px; height:25px; background-color:#EEE; text-align:center; line-height:25px;float:left}
 div#controls canvas#timeline{float:left}
+
 </style>
 </head>
 <body>
-<video id="videosrc" src="video/seikoku.flv" style="position:fixed; left:-2000px" preload="auto">
+<video id="videosrc" src="video/1.mp4" style="position:fixed; left:810px; top:8px" preload="auto">
 ...
 </video>
 <div id="main">
@@ -25,18 +36,18 @@ div#controls canvas#timeline{float:left}
 	<canvas id="video" width="800" height="600" style="position:absolute; left:0px; top:0px">
 	Your browser does not support the HTML5 canvas tag.
 	</canvas>
-	<canvas id="barrage" width="800" height="600" style="position:absolute; left:0px; top:0px" onclick=p.play()>
+	<canvas id="barrage" width="800" height="600" style="position:absolute; left:0px; top:0px">
 	Your browser does not support the HTML5 canvas tag.
-</canvas>
+	</canvas>
 </div>
 <div id="barrageslot">
-	<div id="barrageoptionpanel" onmouseout=panel('barrageoptionpanel','hide') onmouseover=panel('barrageoptionpanel','display')></div>
-	<div id="barrageoption" onmouseout=panel('barrageoptionpanel','hide') onmouseover=panel('barrageoptionpanel','display')>设</div>
+	<div id="barrageoptionpanel" onmouseout="p.panel('barrageoptionpanel','hide')" onmouseover="p.panel('barrageoptionpanel','display')"></div>
+	<div id="barrageoption" onmouseout="p.panel('barrageoptionpanel','hide')" onmouseover="p.panel('barrageoptionpanel','display')">设定</div>
 	<input id="message" type="text" name="message" />
 	<div id="send" title="毁灭的喷射白光！哒————">发送</div>
 </div>
 <div id="controls">
-	<div id="play" onclick=p.play()>play</div>
+	<div id="play" onclick="p.play()">play</div>
 	<canvas id="timeline" width="600px" height="25px"></canvas>
 	<div id="playtime"></div>
 </div>
