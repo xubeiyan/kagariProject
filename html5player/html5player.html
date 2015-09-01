@@ -27,7 +27,7 @@ div#controls div#play {width:50px; height:25px; background-color:#CCC; text-alig
 div#controls div#playtime {width:150px; height:25px; background-color:#EEE; text-align:center; line-height:25px;float:left}
 div#controls canvas#timeline {float:left}
 div#controls div#volumebutton {float:left; width:25px; height:25px; background-color: #EDE; text-align:center; line-height:25px; font-size:18px; cursor:pointer}
-div#controls div#volume {top:-100px; float:left; width:25px; height:100px}
+div#controls div#volume {width:25px; height:150px; position:absolute; right:25px; bottom:34px; background-color:#DEF; display:none}
 div#controls div#hidevideo {float:left; width:25px; height:25px; background-color: #DDD; text-align:center; line-height:25px; font-size:18px; cursor:pointer}
 
 </style>
@@ -52,12 +52,11 @@ div#controls div#hidevideo {float:left; width:25px; height:25px; background-colo
 	<div id="send" title="毁灭的喷射白光！哒————" onclick="p.sendDanmaku()">发送</div>
 </div>
 <div id="controls">
-	<div id="play" onclick="p.play()">play</div>
+	<div id="play" title="让时间随风消逝吧" onclick="p.play()">play</div>
 	<canvas id="timeline" width="550px" height="25px"></canvas>
 	<div id="playtime"></div>
-	<div id="volumebutton" onclick="p.volume()">
-		<div id="volume"></div>↑
-	</div>
+	<div id="volume" onmouseover="p.panel('volume','display')" onmouseout="p.panel('volume','hide')"></div>
+	<div id="volumebutton" title="音量" onmouseover="p.panel('volume','display')" onmouseout="p.panel('volume','hide')">↑</div>
 	<div id="hidevideo" onclick="p.hideVideo()" title="切换显示原视频">原</div>
 </div>
 <script src="js/barrageplayer.js"></script>
