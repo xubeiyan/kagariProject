@@ -2,16 +2,21 @@ var player = function () {
 	var videoElementWidth = document.getElementById("video").width,
 		videoElementHeight = document.getElementById("video").height,
 		videoWidth = videoElementWidth,
-		videoHeight = videoWidth * 9 / 16, //暂时没有获取原始视频的长宽的办法呢，只有按16:9的
+		videoHeight = videoWidth * 9 / 16, // 暂时没有获取原始视频的长宽的办法呢，只有按16:9的
 		videoPlaying = false,
 		videoPlayTime = document.getElementById('playtime'),
 		videoSrc = document.getElementById("videosrc"),
 		videoCanvas = document.getElementById("video").getContext('2d'),
 		videoId,
 		videoHiding = true,
+		initFlag = false,
+		barrageShadowBlur = 10; // 阴影大小
+		barrageShadowColor = '#000'; // 阴影颜色
 		maxBarrageHeight = 30,
+		playButton = document.getElementById('playbutton'),
 		timeLine = document.getElementById('timeline').getContext('2d'),
 		barrage = document.getElementById('barrage').getContext('2d'),
+		volumeCanvas = document.getElementById('volume').getContext('2d'),
 		// 弹幕池内容为x, y, type, color, speed, content
 		barragePool = [], 
 		// 通道的最大值
@@ -35,12 +40,19 @@ var player = function () {
 						}
 					}
 				}
-				if ((maxX / speedWithMaxX) <= (videoWidth / speed)) {
-					console.log('barrage before: ' + maxX + ' with speed ' + speedWithMaxX + '; barrage after with speed ' + speed);
-					channelStatus[i] += 1;
-					return i;
+				// maxX大于屏幕边缘的情况,直接跳过计算下一行
+				if (maxX <= videoWidth) {
+					// 计算最右端弹幕是否比即将放入的弹幕快，是则放入该弹幕
+					if ((maxX / speedWithMaxX) <= (videoWidth / speed)) {
+						//console.log('barrage before: ' + maxX + ' with speed ' + speedWithMaxX + '; barrage after with speed ' + speed);
+						channelStatus[i] += 1;
+						return i;
+					}
+				} else {
+					//console.log("maxX is " + maxX + ", try the next channel." );
 				}
 			}
+			console.log("cannot get avaliable channel...");
 		}
 		// 格式化时间
 		secondsFormat = function (sec) {
@@ -53,14 +65,14 @@ var player = function () {
 		addBarrageToPool = function (barrageArray) {
 			for (var i = barrageArray.length - 1; i > 0; --i) {
 				if (barrageArray[i] == "#") {
-					console.log('delete ' + barrageArray[i] + ' from barrage array...');
+					//console.log('delete ' + barrageArray[i] + ' from barrage array...');
 					barrageArray.splice(i, 1);
 				}
 			}
 			for (var i = 1; i < barrageArray.length; ++i) {	
 				var barrageElement = barrageArray[i].split(',');
-				if (barrageElement[0] < videoSrc.currentTime) {
-					var barrageSpeed = barrage.measureText(barrageElement[6]).width / 50,
+				if (barrageElement[0] - videoSrc.currentTime < 0.1 && barrageElement[0] - videoSrc.currentTime > -0.1) { // 放入弹幕池的时间是无法使用==来精确匹配的
+					var barrageSpeed = barrage.measureText(barrageElement[6]).width / 50, //字符宽度除以50
 						barrageObj = {
 							x: videoWidth,
 							y: getAvaliableChannel(barrageSpeed) * maxBarrageHeight, // maxBarrageHeight为最大的弹幕高度
@@ -68,10 +80,10 @@ var player = function () {
 							size: barrageElement[2] <= maxBarrageHeight ? barrageElement[2] : maxBarrageHeight,
 							color: barrageElement[4],
 							speed: barrageSpeed,
-							content: barrageElement[6],
+							content: barrageElement[6] //+ " w:" + barrage.measureText(barrageElement[6]).width + " s:" + barrageSpeed
 						};
 					barragePool.push(barrageObj);
-					console.log("add " + barrageObj.content + " width " + barrage.measureText(barrageElement[6]).width + " speed " + barrageObj.speed);
+					//console.log("add " + barrageObj.content + " width " + barrage.measureText(barrageElement[6]).width + " speed " + barrageObj.speed);
 					// 要删除的弹幕赋值为‘#’
 					barrageArray[i] = "#";
 				}
@@ -82,7 +94,7 @@ var player = function () {
 			barrage.clearRect(0, 0, 800, 600);
 			for (var i = barragePool.length - 1; i >= 0; --i) {
 				if (barragePool[i].content == '#') {
-					console.log('delete ' + barragePool[i].content + " from barrage pool.." + "The number of barrage in channel " + (barragePool[i].y / maxBarrageHeight) + " is " + (channelStatus[barragePool[i].y / maxBarrageHeight] - 1) + '...');
+					//console.log('delete ' + barragePool[i].content + " from barrage pool.." + "The number of barrage in channel " + (barragePool[i].y / maxBarrageHeight) + " is " + (channelStatus[barragePool[i].y / maxBarrageHeight] - 1) + '...');
 					channelStatus[barragePool[i].y / maxBarrageHeight] -= 1;
 					barragePool.splice(i, 1);
 				}
@@ -90,6 +102,8 @@ var player = function () {
 			for (var i = 0; i < barragePool.length; ++i) {
 				if (barragePool[i].type == '1') {
 					barrage.font = barragePool[i].size + 'px 微软雅黑';
+					barrage.shadowColor = barrageShadowColor;
+					barrage.shadowBlur = barrageShadowBlur;
 					barrage.fillStyle = barragePool[i].color;
 					barrage.fillText(barragePool[i].content, barragePool[i].x, barragePool[i].y);
 				}
@@ -101,9 +115,15 @@ var player = function () {
 		},
 		// 绘制每帧
 		drawFrame = function () {
+			// 初始化
+			if (initFlag == false) {
+				timeLine.fillStyle = '#999';
+				volumeCanvas.fillStyle = '#999';
+				volumeCanvas.fillRect(0, 0, document.getElementById('volume').width, document.getElementById('volume').height);
+				initFlag = true;
+			}
 			videoCanvas.drawImage(videoSrc, 0, (videoElementHeight - videoHeight) / 2, videoWidth, videoHeight);
-			videoPlayTime.innerText = secondsFormat(videoSrc.currentTime) + '/' + secondsFormat(videoSrc.duration);
-			timeLine.fillStyle = '#999';
+			videoPlayTime.innerHTML = secondsFormat(videoSrc.currentTime) + '/' + secondsFormat(videoSrc.duration);
 			timeLine.fillRect(0, 0, videoSrc.currentTime / videoSrc.duration * document.getElementById('timeline').width, document.getElementById('timeline').height);
 			addBarrageToPool(danmuku);
 			moveBarrage();
@@ -130,10 +150,6 @@ var player = function () {
 			sendDanmaku: function () {
 				
 			},
-			// 调整音量
-			volume: function () {
-				
-			},
 			// 隐藏原视频
 			hideVideo: function () {
 				if (videoHiding == false) {
@@ -147,13 +163,33 @@ var player = function () {
 			// 播放或暂停视频
 			play: function () {
 				if (videoPlaying == true) {
+					playbutton.innerText = 'play';
 					videoSrc.pause();
 					window.cancelAnimationFrame(videoId);
 					videoPlaying = false;
 				} else {
+					playbutton.innerText = 'pause';
 					videoSrc.play();
 					videoId = window.requestAnimationFrame(drawFrame);
 					videoPlaying = true;
+				}
+			},
+			// 单击鼠标
+			click: function (item, event) {
+				//console.log("volume:" + videoSrc.volume);
+				// 音量
+				if (item == 'volume') {
+					var volumeWidth = document.getElementById('volume').width,
+						volumeHeight = document.getElementById('volume').height;
+					volumeCanvas.clearRect(0, 0, volumeWidth, volumeHeight);
+					volumeCanvas.fillRect(0, event.offsetY, volumeWidth, volumeHeight);
+					videoSrc.volume = (volumeHeight - event.offsetY) / volumeHeight;
+				} else if (item == 'timeline') {
+					var timeLineWidth = document.getElementById('timeline').width,
+						timeLineHeight = document.getElementById('timeline').height;
+					timeLine.clearRect(0, 0, timeLineWidth, timeLineHeight);
+					timeLine.fillRect(0, 0, event.offsetX, timeLineHeight);
+					videoSrc.currentTime = videoSrc.duration * event.offsetX / timeLineWidth;
 				}
 			}
 		}
