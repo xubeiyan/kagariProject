@@ -9,9 +9,8 @@ var player = function () {
 		videoCanvas = document.getElementById("video").getContext('2d'),
 		videoId,
 		videoHiding = true,
-		initFlag = false,
 		barrageShadowBlur = 10; // 阴影大小
-		barrageShadowColor = '#000'; // 阴影颜色
+		barrageShadowColor = '#000', // 阴影颜色
 		maxBarrageHeight = 30,
 		playButton = document.getElementById('playbutton'),
 		timeLine = document.getElementById('timeline').getContext('2d'),
@@ -22,6 +21,25 @@ var player = function () {
 		// 通道的最大值
 		channelStatus = [0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0],
+		//
+		fillBarragePanel = function (danmaku) {
+			var barragePanel = document.getElementById('barrage-panel-content'),
+				adjustWidth = function (text, width) { // 调整宽度
+					var outputText = '';
+					for (var i = 0; i < text.length; ++i) {
+						if (timeLine.measureText(outputText + text[i]).width > width) {
+							break;
+						}
+						outputText += text[i];
+					}
+					return outputText;
+				};
+			for (var i = 1; i < danmaku.length; ++i) {
+				var barrageArray = danmaku[i].split(',');
+				barragePanel.innerHTML += '<div><span class="barrage-time">' + secondsFormat(barrageArray[0]) + '</span><span class="barrage-content" title=' + barrageArray[6] + '>' + adjustWidth(barrageArray[6], 230)+'</span><span class="barrage-date">' + barrageArray[5].slice(5) + '</span></div>\n';
+			}
+		},
+		// 获取合适的通道
 		getAvaliableChannel = function(speed) {
 			for (var i = 1; i < Math.floor(videoElementHeight / maxBarrageHeight); ++i) {
 				// 该通道为空的情况
@@ -116,20 +134,22 @@ var player = function () {
 		// 绘制每帧
 		drawFrame = function () {
 			// 初始化
-			if (initFlag == false) {
-				timeLine.fillStyle = '#999';
-				volumeCanvas.fillStyle = '#999';
-				volumeCanvas.fillRect(0, 0, document.getElementById('volume').width, document.getElementById('volume').height);
-				initFlag = true;
-			}
 			videoCanvas.drawImage(videoSrc, 0, (videoElementHeight - videoHeight) / 2, videoWidth, videoHeight);
 			videoPlayTime.innerHTML = secondsFormat(videoSrc.currentTime) + '/' + secondsFormat(videoSrc.duration);
-			timeLine.fillRect(0, 0, videoSrc.currentTime / videoSrc.duration * document.getElementById('timeline').width, document.getElementById('timeline').height);
+			timeLine.fillRect(1, 1, videoSrc.currentTime / videoSrc.duration * document.getElementById('timeline').width + 1, document.getElementById('timeline').height - 1);
 			addBarrageToPool(danmuku);
 			moveBarrage();
 			videoId = window.requestAnimationFrame(drawFrame);
 		},
 		that = {
+			// 初始化
+			init: function () {
+				timeLine.fillStyle = '#999';
+				timeLine.font = '16px 微软雅黑';
+				volumeCanvas.fillStyle = '#999';
+				volumeCanvas.fillRect(0, 0, document.getElementById('volume').width, document.getElementById('volume').height);
+				fillBarragePanel(danmuku);
+			},
 			// 控制音量和弹幕选项面板 
 			panel: function (a, b) {
 				if (a == 'volume') {
@@ -184,12 +204,13 @@ var player = function () {
 					volumeCanvas.clearRect(0, 0, volumeWidth, volumeHeight);
 					volumeCanvas.fillRect(0, event.offsetY, volumeWidth, volumeHeight);
 					videoSrc.volume = (volumeHeight - event.offsetY) / volumeHeight;
+				// 时间轴
 				} else if (item == 'timeline') {
 					var timeLineWidth = document.getElementById('timeline').width,
 						timeLineHeight = document.getElementById('timeline').height;
 					timeLine.clearRect(0, 0, timeLineWidth, timeLineHeight);
-					timeLine.fillRect(0, 0, event.offsetX, timeLineHeight);
-					videoSrc.currentTime = videoSrc.duration * event.offsetX / timeLineWidth;
+					timeLine.fillRect(1, 1, event.offsetX, timeLineHeight - 1); // 周围空1像素感觉好看点
+					videoSrc.currentTime = videoSrc.duration * (event.offsetX - 1) / (timeLineWidth - 2);
 				}
 			}
 		}
@@ -197,4 +218,4 @@ var player = function () {
 	},
 	p = player();
 	
-	
+window.onload = p.init();	
