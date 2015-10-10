@@ -90,17 +90,33 @@ var player = function () {
 			for (var i = 1; i < barrageArray.length; ++i) {	
 				var barrageElement = barrageArray[i].split(',');
 				if (barrageElement[0] - videoSrc.currentTime < 0.1 && barrageElement[0] - videoSrc.currentTime > -0.1) { // 放入弹幕池的时间是无法使用==来精确匹配的
-					var barrageSpeed = barrage.measureText(barrageElement[6]).width / 50, //字符宽度除以50
-						barrageObj = {
-							x: videoWidth,
-							y: getAvaliableChannel(barrageSpeed) * maxBarrageHeight, // maxBarrageHeight为最大的弹幕高度
-							type: barrageElement[1],
-							size: barrageElement[2] <= maxBarrageHeight ? barrageElement[2] : maxBarrageHeight,
-							color: barrageElement[4],
-							speed: barrageSpeed,
-							content: barrageElement[6] //+ " w:" + barrage.measureText(barrageElement[6]).width + " s:" + barrageSpeed
-						};
-					barragePool.push(barrageObj);
+					if (barrageElement[1] == 1) { // 弹幕类型为从右至左
+						var barrageSpeed = barrage.measureText(barrageElement[6]).width / 50, //字符宽度除以50
+							barrageObj = {
+								x: videoWidth,
+								y: getAvaliableChannel(barrageSpeed) * maxBarrageHeight, // maxBarrageHeight为最大的弹幕高度
+								type: barrageElement[1],
+								size: barrageElement[2] <= maxBarrageHeight ? barrageElement[2] : maxBarrageHeight,
+								color: barrageElement[4],
+								speed: barrageSpeed,
+								content: barrageElement[6] //+ " w:" + barrage.measureText(barrageElement[6]).width + " s:" + barrageSpeed
+							};
+						barragePool.push(barrageObj);			
+					} else if (barrageElement[1] == 2) { // 弹幕类型为下方悬停
+						var stayTime = 3, // 3秒？
+							barrageObj = {
+								x: (videoWidth - barrage.measureText(barrageElement[6]).width) / 2,
+								y: 550,
+								type: barrageElement[1],
+								size: barrageElement[2] <= maxBarrageHeight ? barrageElement[2] : maxBarrageHeight,
+								color: barrageElement[4],
+								dispearTime: videoSrc.currentTime + stayTime,
+								content: barrageElement[6]
+							}
+						barragePool.push(barrageObj);
+					} else if (barrageElement[1] == 3) {
+						
+					}
 					//console.log("add " + barrageObj.content + " width " + barrage.measureText(barrageElement[6]).width + " speed " + barrageObj.speed);
 					// 要删除的弹幕赋值为‘#’
 					barrageArray[i] = "#";
@@ -118,17 +134,24 @@ var player = function () {
 				}
 			}
 			for (var i = 0; i < barragePool.length; ++i) {
+				barrage.font = barragePool[i].size + 'px 微软雅黑';
+				barrage.shadowColor = barrageShadowColor;
+				barrage.shadowBlur = barrageShadowBlur;
+				barrage.fillStyle = barragePool[i].color;
+				barrage.fillText(barragePool[i].content, barragePool[i].x, barragePool[i].y);
+				
 				if (barragePool[i].type == '1') {
-					barrage.font = barragePool[i].size + 'px 微软雅黑';
-					barrage.shadowColor = barrageShadowColor;
-					barrage.shadowBlur = barrageShadowBlur;
-					barrage.fillStyle = barragePool[i].color;
-					barrage.fillText(barragePool[i].content, barragePool[i].x, barragePool[i].y);
+					barragePool[i].x -= barragePool[i].speed;
+					if (barragePool[i].x + barrage.measureText(barragePool[i].content).width < 0) {
+						barragePool[i].content = "#";
+					}
+				} else if (barragePool[i].type == '2'){
+					if (barragePool[i].dispearTime - videoSrc.currentTime < 0) {
+						barragePool[i].content = "#";
+					}
 				}
-				barragePool[i].x -= barragePool[i].speed;
-				if (barragePool[i].x + barrage.measureText(barragePool[i].content).width < 0) {
-					barragePool[i].content = "#";
-				}
+				
+				
 			}
 		},
 		// 绘制每帧

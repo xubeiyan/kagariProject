@@ -9,6 +9,8 @@
 .w75{width:745px}
 .w80{width:795px}
 .w90{width:895px}
+.w100{width:995px}
+.w110{width:1095px}
 .hp5{height:45px}
 .h10{height:95px}
 .h15{height:145px}
@@ -42,7 +44,7 @@
 .yellow{background-color:#FF0}
 
 body{margin-top:20px; background-color:#4B0082; font-family:"微软雅黑"}
-div.container{width:900px; margin-left:auto; margin-right:auto}
+div.container{width:1100px; margin-left:auto; margin-right:auto}
 div.chip{float:left; margin-right:5px; margin-bottom:5px; position:relative}
 p.description{margin:5px; padding:0; font-size:14px; color:#EEE}
 span.areaname{font-size:16px}

@@ -1,18 +1,15 @@
 <?php
-include "lib/database.php";
+include "lib/Database.class.php";
 include "lib/Video.class.php";
 include "lib/User.class.php";
 
+Database::createDatabase();
+Database::useDatabase();
+Database::createVideoTable();
+Database::createUserTable();
 
-if (isset($_GET['inittable'])) {
-	if ($_GET['inittable'] == 'video') {
-		Video::createVideoTable();
-	} else if ($_GET['inittable'] == 'user') {
-		User::createUserTable();
-	} else {
-		echo 'nothing to do';
-	}
+if (isset($_GET['test'])) {
+	Database::testData();
 }
-
 
 ?>
