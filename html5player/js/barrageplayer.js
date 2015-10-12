@@ -21,6 +21,16 @@ var player = function () {
 		// 通道的最大值
 		channelStatus = [0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0],
+		adjustWidth = function (text, width) { // 调整宽度
+			var outputText = '';
+			for (var i = 0; i < text.length; ++i) {
+				if (timeLine.measureText(outputText + text[i]).width > width) {
+					break;
+				}
+				outputText += text[i];
+			}
+			return outputText;
+		},
 		//
 		fillBarragePanel = function (danmaku) {
 			var barragePanel = document.getElementById('barrage-panel-content'),
@@ -79,6 +89,18 @@ var player = function () {
 				seconds = rawTime % 60 < 10 ? '0' + rawTime % 60 : rawTime % 60;
 			return minutes + ':' + seconds;
 		},
+		// 格式化日期
+		dateFormat = function () {
+			var date = new Date(),
+				month = date.getMonth() + 1,
+				day = date.getDate(),
+				hour = date.getHours(),
+				minute = date.getMinutes(),
+				addZero = function (time) {
+					return time < 10 ? '0' + time : time;
+				}
+			return addZero(month) + '-' + addZero(day) + ' ' + addZero(hour) + ':' + addZero(minute);
+		},
 		// 添加弹幕
 		addBarrageToPool = function (barrageArray) {
 			for (var i = barrageArray.length - 1; i > 0; --i) {
@@ -88,7 +110,9 @@ var player = function () {
 				}
 			}
 			for (var i = 1; i < barrageArray.length; ++i) {	
-				var barrageElement = barrageArray[i].split(',');
+				var barrageElement = barrageArray[i].split(','),
+					barrageSize = barrageElement[2] <= maxBarrageHeight ? barrageElement[2] : maxBarrageHeight;
+				barrage.font = barrageSize + 'px 微软雅黑';
 				if (barrageElement[0] - videoSrc.currentTime < 0.1 && barrageElement[0] - videoSrc.currentTime > -0.1) { // 放入弹幕池的时间是无法使用==来精确匹配的
 					if (barrageElement[1] == 1) { // 弹幕类型为从右至左
 						var barrageSpeed = barrage.measureText(barrageElement[6]).width / 50, //字符宽度除以50
@@ -96,7 +120,7 @@ var player = function () {
 								x: videoWidth,
 								y: getAvaliableChannel(barrageSpeed) * maxBarrageHeight, // maxBarrageHeight为最大的弹幕高度
 								type: barrageElement[1],
-								size: barrageElement[2] <= maxBarrageHeight ? barrageElement[2] : maxBarrageHeight,
+								size: barrageSize,
 								color: barrageElement[4],
 								speed: barrageSpeed,
 								content: barrageElement[6] //+ " w:" + barrage.measureText(barrageElement[6]).width + " s:" + barrageSpeed
@@ -164,6 +188,30 @@ var player = function () {
 			moveBarrage();
 			videoId = window.requestAnimationFrame(drawFrame);
 		},
+		// 发送弹幕
+		sendBarrage = function () {
+			var message = document.getElementById("message").value,
+				barragePanel = document.getElementById('barrage-panel-content'),
+				date = new Date();
+			document.getElementById("message").value = '';
+			if (message == "") {
+				return;
+			}
+			var barrageSpeed = barrage.measureText(message).width / 50, //字符宽度除以50
+				barrageObj = {
+					x: videoWidth,
+					y: getAvaliableChannel(barrageSpeed) * maxBarrageHeight, // maxBarrageHeight为最大的弹幕高度
+					type: 1,
+					size: 25,
+					color: '#FFF',
+					speed: barrageSpeed,
+					content: message 
+				};
+			barragePool.push(barrageObj);
+			
+			barragePanel.innerHTML += '<div><span class="barrage-time">' + secondsFormat(Math.floor(videoSrc.currentTime)) + '</span><span class="barrage-content" title=' + message + '>' + adjustWidth(message, 230) + '</span><span class="barrage-date">' + dateFormat() + '</span></div>\n';
+		
+		},
 		that = {
 			// 初始化
 			init: function () {
@@ -191,7 +239,7 @@ var player = function () {
 			},
 			// 发送弹幕
 			sendDanmaku: function () {
-				
+				sendBarrage();
 			},
 			// 隐藏原视频
 			hideVideo: function () {
@@ -234,6 +282,13 @@ var player = function () {
 					timeLine.clearRect(0, 0, timeLineWidth, timeLineHeight);
 					timeLine.fillRect(1, 1, event.offsetX, timeLineHeight - 1); // 周围空1像素感觉好看点
 					videoSrc.currentTime = videoSrc.duration * (event.offsetX - 1) / (timeLineWidth - 2);
+				}
+			},
+			// 按键
+			pressKey: function (key, event) {
+				//console.log('en');
+				if (key == 'send' && event.keyCode == 13) {
+					sendBarrage();
 				}
 			}
 		}

@@ -39,12 +39,12 @@ span.barrage-date {width:95px; padding-left:5px; display: inline-block }
 </style>
 </head>
 <body>
-<video id="videosrc" src="video/1.mp4" style="position:fixed; left:810px; top:8px" preload="auto">
+<video id="videosrc" src="video/1.mp4" style="position:fixed; left:1000px; top:8px" preload="auto">
 ...
 </video>
 <div id="videoplayer">
 <div id="videoplayer-left">
-	<div id="main">
+	<div id="main" onclick="p.play()">
 		<div style="position:absolute; left:0px; top:0px; width:800px; height:600px; background-color:#000"></div>
 		<canvas id="video" width="800" height="600" style="position:absolute; left:0px; top:0px">
 		Your browser does not support the HTML5 canvas tag.
@@ -53,8 +53,12 @@ span.barrage-date {width:95px; padding-left:5px; display: inline-block }
 		Your browser does not support the HTML5 canvas tag.
 		</canvas>
 	</div>
-	<div id="barrageslot">
-		<div id="barrageoptionpanel" onmouseout="p.panel('barrageoptionpanel','hide')" onmouseover="p.panel('barrageoptionpanel','display')"></div>
+	<div id="barrageslot" onkeypress="p.pressKey('send', event)">
+		<div id="barrageoptionpanel" onmouseout="p.panel('barrageoptionpanel','hide')" onmouseover="p.panel('barrageoptionpanel','display')">
+			<div>颜色<input type="text" /></div>
+			<div>大小</div>
+			<div>类型</div>
+		</div>
 		<div id="barrageoption" onmouseout="p.panel('barrageoptionpanel','hide')" onmouseover="p.panel('barrageoptionpanel','display')">设定</div>
 		<input id="message" type="text" name="message" />
 		<div id="send" title="毁灭的喷射白光！哒————" onclick="p.sendDanmaku()">发送</div>
