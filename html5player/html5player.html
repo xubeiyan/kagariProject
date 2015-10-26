@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<title>No zuo no die why you try?</title>
+<title>弹幕播放器?只是做着玩的</title>
 <style type="text/css">
 body {font-family:"微软雅黑"}
 /* 视频 */
@@ -21,7 +21,7 @@ div#barrageslot div#send{width:75px; height:25px; background-color:#FDB974; font
 /* 控制按钮部分 */
 div#controls {width:800px; height:25px; position:relative}
 div#controls div#playbutton {width:50px; height:25px; background-color:#CCC; text-align:center; line-height:25px;float:left; cursor:pointer; border-radius:5px}
-div#controls div#playtime {width:150px; height:25px; background-color:#EEE; text-align:center; line-height:25px;float:left}
+div#controls div#playtime {width:150px; height:25px; background-color:#EBB1FF; text-align:center; line-height:25px;float:left}
 div#controls canvas#timeline {float:left}
 div#controls div#volumebutton {float:left; width:25px; height:25px; background-color: #EDE; text-align:center; line-height:25px; font-size:18px; cursor:pointer; border-radius:5px}
 div#controls canvas#volume {width:25px; height:150px; position:absolute; right:25px; bottom:25px; background-color:#DEF; display:none}
@@ -39,7 +39,7 @@ span.barrage-date {width:95px; padding-left:5px; display: inline-block }
 </style>
 </head>
 <body>
-<video id="videosrc" src="video/1.mp4" style="position:fixed; left:1000px; top:8px" preload="auto">
+<video id="videosrc" src="video/1.mp4" style="position:fixed; left:1000px; top:8px" preload="auto" onended="p.end()">
 ...
 </video>
 <div id="videoplayer">
@@ -56,8 +56,16 @@ span.barrage-date {width:95px; padding-left:5px; display: inline-block }
 	<div id="barrageslot" onkeypress="p.pressKey('send', event)">
 		<div id="barrageoptionpanel" onmouseout="p.panel('barrageoptionpanel','hide')" onmouseover="p.panel('barrageoptionpanel','display')">
 			<div>颜色<input type="text" /></div>
-			<div>大小</div>
-			<div>类型</div>
+			<div>大小
+				<input type="text" id="barrage-size" name="barrage-size" value="25"/>
+			</div>
+			<div>类型
+				<select id="barragetype" name="barragetype">
+					<option value='1' selected>右至左</option>
+					<option value='2'>下方悬停</option>
+					<option value='3'>上方悬停</option>
+				</select>
+			</div>
 		</div>
 		<div id="barrageoption" onmouseout="p.panel('barrageoptionpanel','hide')" onmouseover="p.panel('barrageoptionpanel','display')">设定</div>
 		<input id="message" type="text" name="message" />
