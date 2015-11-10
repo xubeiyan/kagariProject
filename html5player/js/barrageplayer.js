@@ -18,9 +18,10 @@ var player = function () {
 		volumeCanvas = document.getElementById('volume').getContext('2d'),
 		// 弹幕池内容为x, y, type, color, speed, content
 		barragePool = [], 
-		// 通道的最大值
+		// 通道的最大值，此为从右至左部分
 		channelStatus = [0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0],
+		// 通道的最大值, 此为上部悬停和下部悬停
 		channelStatus2 = [0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0],
 		// 调整宽度				
@@ -120,18 +121,29 @@ var player = function () {
 				}
 			return addZero(month) + '-' + addZero(day) + ' ' + addZero(hour) + ':' + addZero(minute);
 		},
-		// 获取待发送弹幕大小
-		getBarrageSize = function () {
-			var barrageSize = parseInt(document.getElementById("barrage-size").value, 10);
-			if (isNaN(barrageSize)) {
-				barrageSize = 25;
+		// 获取待发送弹幕大小和颜色
+		getBarrageDetails = function () {
+			var size = parseInt(document.getElementById("barrage-size").value, 10),
+				color = document.getElementById("barrage-color").value,
+				barrageDetail = {};
+			if (isNaN(size)) {
+				size = 25;
 			}
-			if (barrageSize > 30) { // 最大30px，最小12px
-				barrageSize = 30;
-			} else if (barrageSize < 6) {
-				barrageSize = 6;
+			if (size > 30) { // 最大30px，最小12px
+				size = 30;
+			} else if (size < 6) {
+				size = 6;
 			}
-			return barrageSize;
+			
+			if (color[0] != '#') {
+				color = '#FFF';
+			}
+			if (isNaN(parseInt(color.substring(1), 16))) {
+				color = '#FFF';
+			}
+			barrageDetail.color = color;
+			barrageDetail.size = size;
+			return barrageDetail;
 		},
 		// 添加弹幕
 		addBarrageToPool = function (barrageArray) {
@@ -241,8 +253,8 @@ var player = function () {
 						x: videoWidth,
 						y: getAvaliableChannel(barrageSpeed, barrageType) * maxBarrageHeight, // maxBarrageHeight为最大的弹幕高度
 						type: barrageType,
-						size: getBarrageSize(),
-						color: '#FFF',
+						size: getBarrageDetails().size,
+						color: getBarrageDetails().color,
 						speed: barrageSpeed,
 						content: message 
 					};
@@ -253,8 +265,8 @@ var player = function () {
 						x: (videoWidth - barrage.measureText(message).width) / 2,
 						y: getAvaliableChannel(0, barrageType) * maxBarrageHeight,
 						type: barrageType,
-						size: getBarrageSize(),
-						color: '#FFF',
+						size: getBarrageDetails().size,
+						color: getBarrageDetails().color,
 						dispearTime: videoSrc.currentTime + stayTime,
 						content: message
 					};
@@ -266,8 +278,8 @@ var player = function () {
 						x: (videoWidth - barrage.measureText(message).width) / 2,
 						y: getAvaliableChannel(0, barrageType) * maxBarrageHeight,
 						type: barrageType,
-						size: getBarrageSize(),
-						color: '#FFF',
+						size: getBarrageDetails().size,
+						color: getBarrageDetails().color,
 						dispearTime: videoSrc.currentTime + stayTime,
 						content: message
 					};

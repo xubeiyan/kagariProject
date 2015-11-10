@@ -15,7 +15,9 @@ div#main {width:800px; height:600px; position:relative}
 /* 弹幕发送部分 */
 div#barrageslot {width:800px; height:25px; position:relative}
 div#barrageoption {width:50px; height:25px; float:left; background-color:#0FF; text-align:center; line-height:25px; font-size:18px; cursor:pointer; border-radius:5px}
-div#barrageslot div#barrageoptionpanel {width:300px; height:200px; position:absolute; left:0px; bottom:25px; background-color:#CED; display:none}
+div#barrageslot div#barrageoptionpanel {width:200px; height:100px; padding:5px; position:absolute; left:0px; bottom:25px; background-color:#CED; display:none}
+div#barrageslot div#barrageoptionpanel input {width:100px}
+div#barrageslot div#barrageoptionpanel select {width:104px}
 div#barrageslot input#message{width:673px; height:25px; padding:0 0 0 2px; border:0; background-color:#DEF; font-size:20px; float:left}
 div#barrageslot div#send{width:75px; height:25px; background-color:#FDB974; font-size:18px; text-align:center; line-height:25px; float:left; cursor:pointer; border-radius:5px}
 /* 控制按钮部分 */
@@ -55,7 +57,7 @@ span.barrage-date {width:95px; padding-left:5px; display: inline-block }
 	</div>
 	<div id="barrageslot" onkeypress="p.pressKey('send', event)">
 		<div id="barrageoptionpanel" onmouseout="p.panel('barrageoptionpanel','hide')" onmouseover="p.panel('barrageoptionpanel','display')">
-			<div>颜色<input type="text" /></div>
+			<div>颜色 <input id="barrage-color" name="barrage-color" type="text" value="#FFF"/></div>
 			<div>大小
 				<input type="text" id="barrage-size" name="barrage-size" value="25"/>
 			</div>
