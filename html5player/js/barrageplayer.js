@@ -110,8 +110,9 @@ var player = function () {
 			return minutes + ':' + seconds;
 		},
 		// 格式化日期
-		dateFormat = function () {
+		dateFormat = function (yearFlag) {
 			var date = new Date(),
+				year = date.getFullYear(),
 				month = date.getMonth() + 1,
 				day = date.getDate(),
 				hour = date.getHours(),
@@ -119,7 +120,11 @@ var player = function () {
 				addZero = function (time) {
 					return time < 10 ? '0' + time : time;
 				}
-			return addZero(month) + '-' + addZero(day) + ' ' + addZero(hour) + ':' + addZero(minute);
+			if (yearFlag == undefined) {
+				return addZero(month) + '-' + addZero(day) + ' ' + addZero(hour) + ':' + addZero(minute);
+			} else if (yearFlag == 'year') {
+				return year + '-' + addZero(month) + '-' + addZero(day) + ' ' + addZero(hour) + ':' + addZero(minute);
+			}
 		},
 		// 获取待发送弹幕大小和颜色
 		getBarrageDetails = function () {
@@ -258,7 +263,8 @@ var player = function () {
 						speed: barrageSpeed,
 						content: message 
 					};
-				barragePool.push(barrageObj);	
+				barragePool.push(barrageObj);
+				sendBarrageToBackend(barrageObj); // 后台
 			} else if (barrageType == 2) {
 				var stayTime = 3,
 					barrageObj = {
@@ -287,7 +293,21 @@ var player = function () {
 			}
 			
 			barragePanel.innerHTML += '<div><span class="barrage-time">' + secondsFormat(Math.floor(videoSrc.currentTime)) + '</span><span class="barrage-content" title=' + message + '>' + adjustWidth(message, 230) + '</span><span class="barrage-date">' + dateFormat() + '</span></div>\n';
-		
+		},
+		// 发送至后台页面
+		sendBarrageToBackend = function (barrage) {
+			var date = new Date(),
+				barrageStr = videoSrc.currentTime + ',' + barrage.type + ',' + barrage.size + ',' + 'test' + ',' + barrage.color + ',' + dateFormat('year') + ',' + barrage.content,
+				req;
+			
+			if (window.XMLHttpRequest) {
+				req = new XMLHttpRequest();
+			} else {
+				req = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			req.open("POST", "backend/backend.php", true);
+			req.send(barrageStr);
+			console.log(barrageStr);
 		},
 		that = {
 			// 初始化
@@ -378,6 +398,7 @@ var player = function () {
 				playbutton.innerText = 'play';
 				videoPlaying = false;
 			}
+			
 		}
 		return that;
 	},
