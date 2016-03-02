@@ -277,6 +277,7 @@ var player = function () {
 						content: message
 					};
 				barragePool.push(barrageObj);
+				sendBarrageToBackend(barrageObj); // 后台
 				//console.log('type 2 put in...');
 			} else if (barrageType == 3) {
 				var stayTime = 3,
@@ -290,6 +291,7 @@ var player = function () {
 						content: message
 					};
 				barragePool.push(barrageObj);
+				sendBarrageToBackend(barrageObj); // 后台
 			}
 			
 			barragePanel.innerHTML += '<div><span class="barrage-time">' + secondsFormat(Math.floor(videoSrc.currentTime)) + '</span><span class="barrage-content" title=' + message + '>' + adjustWidth(message, 230) + '</span><span class="barrage-date">' + dateFormat() + '</span></div>\n';
