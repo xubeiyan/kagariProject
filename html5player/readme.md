@@ -1,7 +1,7 @@
 ###Html5 barrage player html5弹幕播放器（测试中）
 
 #####实地测试地址
-http://yukiyuki.me/kagariProject/html5player/html5player.html 视频源为“”（魔法少女伊莉娅第二季第二集）
+http://yukiyuki.me/kagariProject/html5player/html5player.html 视频源为“Fate/kaleid liner プリズマ☆イリヤ 2wei Herz 命短し腐れよ乙女”（魔法少女伊莉娅第三期）的第三集
 
 #####已完成的：
 1. Chrome、Firefox、IE测试通过（Chrome 48.0.2564.116，Firefox 44.0.2，IE 11.0.28）
@@ -19,7 +19,8 @@ http://yukiyuki.me/kagariProject/html5player/html5player.html 视频源为“”
 1. Chrome播放一些小分辨率的时候会出现下部分出现彩条的情况，比如实地测试地址中的那个视频，而Firefox和IE就没有      
 2. IE无法用鼠标选择弹幕模式（可以用键盘），一移动到上面菜单就会消失
 3. 音量按钮估计要重做（一是太难看二是根本就不好点）
-4. 进度条估计会加上已加载的部分的颜色（现在只有已播放部分和未播放部分两种颜色）
+4. 进度条估计会加上已加载的部分的颜色（现在只有已播放部分和未播放部分两种颜色）   
+
 然而上面的问题一个都不想解决，懒不想动……
 
 #####注意
