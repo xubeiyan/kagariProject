@@ -1,3 +1,13 @@
 var danmuku = ['time, type, size, user, color, timestamp, content',
-		'16.48,1,25,test,#FFF,2016-03-16 15:31,aaaaaaaaaaaaaaaa',
-		'2,4,25,test,#FFF,2016-03-16 15:52,st:7|ct:wwwwww'];
+		'16.48,1,25,test,#FFF,2016-03-16 15:31,type1:aaaaaaaaaaaaaaaa',
+		'10,2,25,test,#FFF,2016-03-16 21:41,type2:bbbbbbbbbb',
+		'10,2.5,25,test,#FFF,2016-03-16 21:41,type2:222222222',
+		'10,3,25,test,#FFF,2016-03-16 21:41,type3:cccccccccc',
+		'10,3.5,25,tttt,#ABCDEF,2016-03-16 22:25,type3:ddddddddd',
+		'2.5,4,25,test,#FFF,2016-03-16 21:56,st:2|ct:xxxxxx',
+		'24.84,4,25,test,#FFF,2016-03-16 15:52,st:5.2|ct:ぼくらはここにいる',
+		'31.22,4,25,test,#FFF,2016-03-16 15:52,st:4.84|ct:ぼくらがここに在る',
+		'38.12,4,25,test,#FFF,2016-03-16 15:52,st:7.14|ct:ゆるやかな時間が流れてる',
+		'45.82,4,25,test,#FFF,2016-03-16 15:52,st:3.76|ct:この部屋で',
+		'50.14,4,25,test,#FFF,2016-03-16 15:52,st:3.62|ct:夏の日が消えても',
+		'53.86,4,25,test,#FFF,2016-03-16 15:52,st:6.68|ct:残る笑顔たち'];

@@ -87,6 +87,7 @@ var player = function () {
 				}
 				console.log("cannot get avaliable channel...");			
 			} else if (type == 2 || type == 4) { //下部悬停
+				//console.log("type:" + type);
 				for (var i = Math.floor(videoElementHeight / maxBarrageHeight); i >= 1; --i) { //从下往上
 					if (channelStatus2[i] == 0) {
 						channelStatus2[i] = 1;
@@ -154,7 +155,7 @@ var player = function () {
 		addBarrageToPool = function (barrageArray) {
 			for (var i = barrageArray.length - 1; i > 0; --i) {
 				if (barrageArray[i] == "#") {
-					//console.log('delete ' + barrageArray[i] + ' from barrage array...');
+					console.log("to delete barrageArray:" + i);
 					barrageArray.splice(i, 1);
 				}
 			}
@@ -175,7 +176,7 @@ var player = function () {
 								content: barrageElement[6] //+ " w:" + barrage.measureText(barrageElement[6]).width + " s:" + barrageSpeed
 							};
 						barragePool.push(barrageObj);			
-					} else if (barrageElement[1] == 2 || barrageElement[1] == 3) { // 弹幕类型为下方悬停
+					} else if (barrageElement[1] == 2 || barrageElement[1] == 3) { // 弹幕类型为下方悬停和上方悬停
 						var stayTime = 3, // 3秒？
 							barrageObj = {
 								x: (videoWidth - barrage.measureText(barrageElement[6]).width) / 2,
@@ -189,7 +190,7 @@ var player = function () {
 						barragePool.push(barrageObj);
 						//console.log("y=", barrageObj.y);
 					} else if (barrageElement[1] == 4) { // 高级弹幕
-						console.log("advance barrage...");
+						//console.log("advance barrage...");
 						var advance = barrageElement[6].split('|'),
 							barrageObj = {
 								x: (videoWidth - barrage.measureText(barrageElement[6]).width) / 2,
@@ -202,17 +203,21 @@ var player = function () {
 							};
 						for (var i = 0; i < advance.length; ++i) {
 							if (advance[i].substring(0, 3) == 'st:') {
-								var num = parseInt(advance[i].substring(4));
+								var num = parseFloat(advance[i].substring(3));
 								if (!isNaN(num)) {
 									barrageObj.dispearTime = videoSrc.currentTime + num;
-								}
+									//console.log("dispearTime:" + videoSrc.currentTime + num);
+								} 
+								
 							} else if (advance[i].substring(0, 3) == "ct:") {
-								var cont = advance[i].substring(4);
+								var cont = advance[i].substring(3);
 								
 								barrageObj.x = (videoWidth - barrage.measureText(cont).width) / 2;
 								barrageObj.content = cont;
 							}
+							
 						}
+						
 						barragePool.push(barrageObj);
 					}
 					//console.log("add " + barrageObj.content + " width " + barrage.measureText(barrageElement[6]).width + " speed " + barrageObj.speed);
@@ -226,10 +231,13 @@ var player = function () {
 			barrage.clearRect(0, 0, 800, 600);
 			for (var i = barragePool.length - 1; i >= 0; --i) {
 				if (barragePool[i].content == '#') {
-					//console.log('delete ' + barragePool[i].content + " from barrage pool.." + "The number of barrage in channel " + (barragePool[i].y / maxBarrageHeight) + " is " + (channelStatus[barragePool[i].y / maxBarrageHeight] - 1) + '...');
 					if (barragePool[i].type == 1) {
+						//console.log('delete ' + barragePool[i].content + " from barrage pool.." + "The number of barrage in channel " + (barragePool[i].y / maxBarrageHeight) + " is " + (channelStatus[barragePool[i].y / maxBarrageHeight] - 1) + '...');
 						channelStatus[barragePool[i].y / maxBarrageHeight] -= 1;
-					} else if (barragePool[i].type == 2 || barragePool[i].type == 3) {
+					} else if (barragePool[i].type == 2 || barragePool[i].type == 3 || barragePool[i].type == 4) {
+						if (barragePool[i].type == 4) {
+							//console.log('delete ' + barragePool[i].content + " from barrage pool.." + "The number of barrage in channel2 " + (barragePool[i].y / maxBarrageHeight) + " is " + (channelStatus2[barragePool[i].y / maxBarrageHeight] - 1) + '...');
+						}
 						channelStatus2[barragePool[i].y / maxBarrageHeight] -= 1;
 					}
 					barragePool.splice(i, 1);
@@ -247,15 +255,11 @@ var player = function () {
 					if (barragePool[i].x + barrage.measureText(barragePool[i].content).width < 0) {
 						barragePool[i].content = "#";
 					}
-				} else if (barragePool[i].type == '2' || barragePool[i].type == '4') {
+				} else if (barragePool[i].type == '2' || barragePool[i].type == '3' || barragePool[i].type == '4') {
 					if (barragePool[i].dispearTime - videoSrc.currentTime < 0) {
 						barragePool[i].content = "#";
 					}
-				} else if (barragePool[i].type == '3') {
-					if (barragePool[i].dispearTime - videoSrc.currentTime < 0) {
-						barragePool[i].content = "#";
-					}
-				}			
+				} 	
 			}
 		},
 		// 绘制每帧
