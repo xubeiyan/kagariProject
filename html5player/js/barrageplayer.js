@@ -33,7 +33,7 @@ var player = function () {
 				}
 				outputText += text[i];
 			}
-			return outputText;
+			return outputText + '...';
 		},
 		// 输出到右边
 		fillBarragePanel = function (danmaku) {
@@ -50,7 +50,7 @@ var player = function () {
 				};
 			for (var i = 1; i < danmaku.length; ++i) {
 				var barrageArray = danmaku[i].split(',');
-				barragePanel.innerHTML += '<div><span class="barrage-time">' + secondsFormat(barrageArray[0]) + '</span><span class="barrage-content" title=' + barrageArray[6] + '>' + adjustWidth(barrageArray[6], 230)+'</span><span class="barrage-date">' + barrageArray[5].slice(5) + '</span></div>\n';
+				barragePanel.innerHTML += '<div><span class="barrage-time">' + secondsFormat(barrageArray[0]) + '</span><span class="barrage-content" title=' + barrageArray[6] + '>' + adjustWidth(barrageArray[6], 210)+'</span><span class="barrage-date">' + barrageArray[5].slice(5) + '</span></div>\n';
 			}
 		},
 		// 获取合适的通道
@@ -86,21 +86,21 @@ var player = function () {
 					}
 				}
 				console.log("cannot get avaliable channel...");			
-			} else if (type == 2) {
+			} else if (type == 2 || type == 4) { //下部悬停
 				for (var i = Math.floor(videoElementHeight / maxBarrageHeight); i >= 1; --i) { //从下往上
 					if (channelStatus2[i] == 0) {
 						channelStatus2[i] = 1;
 						return i;
 					}
 				}
-			} else if (type == 3) {
+			} else if (type == 3) { //上部悬停
 				for (var i = 1; i <Math.floor(videoElementHeight / maxBarrageHeight); ++i) {
 					if (channelStatus2[i] == 0) {
 						channelStatus2[i] = 1;
 						return i;
 					}
 				}
-			}
+			} 
 		}
 		// 格式化时间
 		secondsFormat = function (sec) {
@@ -188,7 +188,33 @@ var player = function () {
 							}
 						barragePool.push(barrageObj);
 						//console.log("y=", barrageObj.y);
-					} 
+					} else if (barrageElement[1] == 4) { // 高级弹幕
+						console.log("advance barrage...");
+						var advance = barrageElement[6].split('|'),
+							barrageObj = {
+								x: (videoWidth - barrage.measureText(barrageElement[6]).width) / 2,
+								y: getAvaliableChannel(0, barrageElement[1]) * maxBarrageHeight,
+								type: barrageElement[1],
+								size: barrageElement[2] <= maxBarrageHeight ? barrageElement[2] : maxBarrageHeight,
+								color: barrageElement[4],
+								dispearTime: videoSrc.currentTime + 3,
+								content: 'No Content'
+							};
+						for (var i = 0; i < advance.length; ++i) {
+							if (advance[i].substring(0, 3) == 'st:') {
+								var num = parseInt(advance[i].substring(4));
+								if (!isNaN(num)) {
+									barrageObj.dispearTime = videoSrc.currentTime + num;
+								}
+							} else if (advance[i].substring(0, 3) == "ct:") {
+								var cont = advance[i].substring(4);
+								
+								barrageObj.x = (videoWidth - barrage.measureText(cont).width) / 2;
+								barrageObj.content = cont;
+							}
+						}
+						barragePool.push(barrageObj);
+					}
 					//console.log("add " + barrageObj.content + " width " + barrage.measureText(barrageElement[6]).width + " speed " + barrageObj.speed);
 					// 要删除的弹幕赋值为‘#’
 					barrageArray[i] = "#";
@@ -221,7 +247,7 @@ var player = function () {
 					if (barragePool[i].x + barrage.measureText(barragePool[i].content).width < 0) {
 						barragePool[i].content = "#";
 					}
-				} else if (barragePool[i].type == '2') {
+				} else if (barragePool[i].type == '2' || barragePool[i].type == '4') {
 					if (barragePool[i].dispearTime - videoSrc.currentTime < 0) {
 						barragePool[i].content = "#";
 					}
@@ -265,7 +291,7 @@ var player = function () {
 					};
 				barragePool.push(barrageObj);
 				sendBarrageToBackend(barrageObj); // 后台
-			} else if (barrageType == 2) {
+			} else if (barrageType == 2 || barrageType == 4) {
 				var stayTime = 3,
 					barrageObj = {
 						x: (videoWidth - barrage.measureText(message).width) / 2,
@@ -292,13 +318,14 @@ var player = function () {
 					};
 				barragePool.push(barrageObj);
 				sendBarrageToBackend(barrageObj); // 后台
-			}
+			} 
 			
 			barragePanel.innerHTML += '<div><span class="barrage-time">' + secondsFormat(Math.floor(videoSrc.currentTime)) + '</span><span class="barrage-content" title=' + message + '>' + adjustWidth(message, 230) + '</span><span class="barrage-date">' + dateFormat() + '</span></div>\n';
 		},
 		// 发送至后台页面
 		sendBarrageToBackend = function (barrage) {
 			var date = new Date(),
+				videoStr = videoSrc.src.split("/").pop(),
 				barrageStr = videoSrc.currentTime + ',' + barrage.type + ',' + barrage.size + ',' + 'test' + ',' + barrage.color + ',' + dateFormat('year') + ',' + barrage.content,
 				req;
 			
@@ -308,7 +335,7 @@ var player = function () {
 				req = new ActiveXObject("Microsoft.XMLHTTP");
 			}
 			req.open("POST", "backend/backend.php", true);
-			req.send(barrageStr);
+			req.send(videoStr + "||" +barrageStr);
 			console.log(barrageStr);
 		},
 		that = {
