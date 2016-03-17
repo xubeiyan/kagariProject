@@ -155,16 +155,20 @@ var player = function () {
 		addBarrageToPool = function (barrageArray) {
 			for (var i = barrageArray.length - 1; i > 0; --i) {
 				if (barrageArray[i] == "#") {
-					console.log("to delete barrageArray:" + i);
+					//console.log("barrageArray[1]:" + barrageArray[1]);
+					//console.log("barrageArray[2]:" + barrageArray[2]);
+					//console.log("barrageArray[3]:" + barrageArray[3]);
+					//console.log("barrageArray[4]:" + barrageArray[4]);
 					barrageArray.splice(i, 1);
 				}
 			}
 			for (var i = 1; i < barrageArray.length; ++i) {	
 				var barrageElement = barrageArray[i].split(','),
 					barrageSize = barrageElement[2] <= maxBarrageHeight ? barrageElement[2] : maxBarrageHeight;
+				console.log("barrage:" + barrageArray[i]);
 				barrage.font = barrageSize + 'px 微软雅黑';
-				if (barrageElement[0] - videoSrc.currentTime < 0.1 && barrageElement[0] - videoSrc.currentTime > -0.1) { // 放入弹幕池的时间是无法使用==来精确匹配的
-					if (barrageElement[1] == 1) { // 弹幕类型为从右至左
+				if (barrageElement[0] - videoSrc.currentTime < 0.05 && barrageElement[0] - videoSrc.currentTime > -0.05) { // 放入弹幕池的时间是无法使用==来精确匹配的
+					if (barrageElement[1] == '1') { // 弹幕类型为从右至左
 						var barrageSpeed = barrage.measureText(barrageElement[6]).width / 50, //字符宽度除以50
 							barrageObj = {
 								x: videoWidth,
@@ -176,7 +180,7 @@ var player = function () {
 								content: barrageElement[6] //+ " w:" + barrage.measureText(barrageElement[6]).width + " s:" + barrageSpeed
 							};
 						barragePool.push(barrageObj);			
-					} else if (barrageElement[1] == 2 || barrageElement[1] == 3) { // 弹幕类型为下方悬停和上方悬停
+					} else if (barrageElement[1] == '2' || barrageElement[1] == '3') { // 弹幕类型为下方悬停和上方悬停
 						var stayTime = 3, // 3秒？
 							barrageObj = {
 								x: (videoWidth - barrage.measureText(barrageElement[6]).width) / 2,
@@ -189,35 +193,39 @@ var player = function () {
 							}
 						barragePool.push(barrageObj);
 						//console.log("y=", barrageObj.y);
-					} else if (barrageElement[1] == 4) { // 高级弹幕
-						//console.log("advance barrage...");
+					} else if (barrageElement[1] == '4') { // 高级弹幕
+						
 						var advance = barrageElement[6].split('|'),
-							barrageObj = {
-								x: (videoWidth - barrage.measureText(barrageElement[6]).width) / 2,
-								y: getAvaliableChannel(0, barrageElement[1]) * maxBarrageHeight,
-								type: barrageElement[1],
-								size: barrageElement[2] <= maxBarrageHeight ? barrageElement[2] : maxBarrageHeight,
-								color: barrageElement[4],
-								dispearTime: videoSrc.currentTime + 3,
-								content: 'No Content'
-							};
+							dispearTime,// 消失时间
+							x,			// 出现位置x
+							content;	// 弹幕内容
+							
 						for (var i = 0; i < advance.length; ++i) {
 							if (advance[i].substring(0, 3) == 'st:') {
 								var num = parseFloat(advance[i].substring(3));
 								if (!isNaN(num)) {
-									barrageObj.dispearTime = videoSrc.currentTime + num;
+									dispearTime = videoSrc.currentTime + num;
 									//console.log("dispearTime:" + videoSrc.currentTime + num);
 								} 
 								
 							} else if (advance[i].substring(0, 3) == "ct:") {
-								var cont = advance[i].substring(3);
+								var cont = advance[i].substring(3)
 								
-								barrageObj.x = (videoWidth - barrage.measureText(cont).width) / 2;
-								barrageObj.content = cont;
+								x = (videoWidth - barrage.measureText(cont).width) / 2;
+								content = cont;
 							}
 							
 						}
-						
+						var barrageObj = {
+								x: x,
+								y: getAvaliableChannel(0, barrageElement[1]) * maxBarrageHeight,
+								type: barrageElement[1],
+								size: barrageElement[2] <= maxBarrageHeight ? barrageElement[2] : maxBarrageHeight,
+								color: barrageElement[4],
+								dispearTime: dispearTime,
+								content: content
+							};
+						//console.log("advance barrage:" + barrageObj.content);
 						barragePool.push(barrageObj);
 					}
 					//console.log("add " + barrageObj.content + " width " + barrage.measureText(barrageElement[6]).width + " speed " + barrageObj.speed);
@@ -236,7 +244,7 @@ var player = function () {
 						channelStatus[barragePool[i].y / maxBarrageHeight] -= 1;
 					} else if (barragePool[i].type == 2 || barragePool[i].type == 3 || barragePool[i].type == 4) {
 						if (barragePool[i].type == 4) {
-							//console.log('delete ' + barragePool[i].content + " from barrage pool.." + "The number of barrage in channel2 " + (barragePool[i].y / maxBarrageHeight) + " is " + (channelStatus2[barragePool[i].y / maxBarrageHeight] - 1) + '...');
+							console.log('delete ' + barragePool[i].content + " from barrage pool.." + "The number of barrage in channel2 " + (barragePool[i].y / maxBarrageHeight) + " is " + (channelStatus2[barragePool[i].y / maxBarrageHeight] - 1) + '...');
 						}
 						channelStatus2[barragePool[i].y / maxBarrageHeight] -= 1;
 					}
@@ -330,6 +338,7 @@ var player = function () {
 		sendBarrageToBackend = function (barrage) {
 			var date = new Date(),
 				videoStr = videoSrc.src.split("/").pop(),
+				// 弹幕格式为time, type, size, user, color, timestamp, content
 				barrageStr = videoSrc.currentTime + ',' + barrage.type + ',' + barrage.size + ',' + 'test' + ',' + barrage.color + ',' + dateFormat('year') + ',' + barrage.content,
 				req;
 			
