@@ -26,7 +26,8 @@ div#controls div#playbutton {width:50px; height:25px; background-color:#CCC; tex
 div#controls div#playtime {width:150px; height:25px; background-color:#EBB1FF; text-align:center; line-height:25px;float:left}
 div#controls canvas#timeline {float:left}
 div#controls div#volumebutton {float:left; width:25px; height:25px; background-color: #EDE; text-align:center; line-height:25px; font-size:18px; cursor:pointer; border-radius:5px}
-div#controls canvas#volume {width:25px; height:150px; position:absolute; right:25px; bottom:25px; background-color:#DEF; display:none}
+div#controls div#volumeback {width:25px; height: 150px; position:absolute; right:25px; background-color:#EDE; bottom:25px; display:none}
+div#controls canvas#volume {width:15px; height:140px; position:absolute; right:5px; bottom:5px; background-color:#DEF}
 div#controls div#hidevideo {float:left; width:25px; height:25px; background-color: #DDD; text-align:center; line-height:25px; font-size:18px; cursor:pointer; border-radius:5px}
 /* 弹幕 */
 span#barrage-time {width:45px; padding-left:5px; background-color:#E4FFBB}
@@ -78,7 +79,9 @@ span.barrage-date {width:95px; padding-left:5px; display: inline-block }
 		<div id="playbutton" title="让时间随风消逝吧" onclick="p.play()">play</div>
 		<canvas id="timeline" width="550px" height="25px" onclick="p.click('timeline', event)"></canvas>
 		<div id="playtime"></div>
-		<canvas id="volume" onmouseover="p.panel('volume','display')" onmouseout="p.panel('volume','hide')" onclick="p.click('volume', event)"></canvas>
+		<div id="volumeback" onmouseover="p.panel('volume','display')" onmouseout="p.panel('volume','hide')">
+			<canvas id="volume" height="140px" width="15px" onmouseover="p.panel('volume','display')" onclick="p.click('volume', event)"></canvas>
+		</div>
 		<div id="volumebutton" title="音量" onmouseover="p.panel('volume','display')" onmouseout="p.panel('volume','hide')">↑</div>
 		<div id="hidevideo" onclick="p.hideVideo()" title="切换显示原视频">原</div>
 	</div>
