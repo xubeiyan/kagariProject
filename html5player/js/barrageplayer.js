@@ -33,7 +33,7 @@ var player = function () {
 				}
 				outputText += text[i];
 			}
-			return outputText + '...';
+			return outputText;
 		},
 		// 输出到右边
 		fillBarragePanel = function (danmaku) {
@@ -42,15 +42,19 @@ var player = function () {
 					var outputText = '';
 					for (var i = 0; i < text.length; ++i) {
 						if (timeLine.measureText(outputText + text[i]).width > width) {
-							break;
+							return outputText + '...';
 						}
 						outputText += text[i];
 					}
 					return outputText;
 				};
 			for (var i = 1; i < danmaku.length; ++i) {
-				var barrageArray = danmaku[i].split(',');
-				barragePanel.innerHTML += '<div><span class="barrage-time">' + secondsFormat(barrageArray[0]) + '</span><span class="barrage-content" title=' + barrageArray[6] + '>' + adjustWidth(barrageArray[6], 210)+'</span><span class="barrage-date">' + barrageArray[5].slice(5) + '</span></div>\n';
+				var barrageArray = danmaku[i].split(','),
+					barrageContent = barrageArray[6];
+				if (barrageArray[1] == '4') {
+					barrageContent = barrageContent.split('|')[1].split(':')[1];
+				}
+				barragePanel.innerHTML += '<div><span class="barrage-time">' + secondsFormat(barrageArray[0]) + '</span><span class="barrage-content" title=' + barrageArray[6] + '>' + adjustWidth(barrageContent, 210)+'</span><span class="barrage-date">' + barrageArray[5].slice(5) + '</span></div>\n';
 			}
 		},
 		// 获取合适的通道
