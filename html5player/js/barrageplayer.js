@@ -328,7 +328,7 @@ var player = function () {
 				sendBarrageToBackend(barrageObj); // 后台
 			} 
 			
-			barragePanel.innerHTML += '<div><span class="barrage-time">' + secondsFormat(Math.floor(videoSrc.currentTime)) + '</span><span class="barrage-content" title=' + message + '>' + adjustWidth(message, 230) + '</span><span class="barrage-date">' + dateFormat() + '</span></div>\n';
+			barragePanel.innerHTML += '<div><span class="barrage-time">' + secondsFormat(Math.floor(videoSrc.currentTime)) + '</span><span class="barrage-content" title="' + message + '">' + adjustWidth(message, 230) + '</span><span class="barrage-date">' + dateFormat() + '</span></div>\n';
 		},
 		// 发送至后台页面
 		sendBarrageToBackend = function (barrage) {
@@ -360,9 +360,9 @@ var player = function () {
 			panel: function (a, b) {
 				if (a == 'volume') {
 					if (b == 'display') {
-						document.getElementById('volumeback').style.display = 'block';
+						document.getElementById('volume').style.display = 'block';
 					} else if (b == 'hide') {
-						document.getElementById('volumeback').style.display = 'none';
+						document.getElementById('volume').style.display = 'none';
 					}
 				} else if (a == 'barrageoptionpanel') {
 					if (b == 'display') {
