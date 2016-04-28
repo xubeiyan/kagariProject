@@ -1,6 +1,6 @@
 <?php
 // 站点配置
-$siteconfig = Array(
+$siteconfig = array(
 	'cssfile' => 'css/main.css',
 	'timeformat' => 'Y年m月d日',
 	'weekday' => array(

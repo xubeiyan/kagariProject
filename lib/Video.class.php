@@ -1,4 +1,5 @@
 <?php
+	include('lib/Database.class.php');
 	/*
 	*	视频类
 	*
@@ -12,30 +13,8 @@
 		private $title;			//视频标题
 		private $description;	//视频简介
 		
-		public function __construct($title, $description) {
-			$this -> $title = $title;
-			$this -> $description = $description;
-		}
-		
-		/*
-		*	创建视频表
-		*/
-		public static function createVideoTable() {
-			$sqlQuery = sprintf("CREATE TABLE video (
-								ID int NOT NULL AUTO_INCREMENT,
-								PRIMARY KEY(ID),
-								upuid int default 0,
-								playtime int default 0,
-								type int default 0,
-								point int default 0,
-								title char(255) character set utf8,
-								description text character set utf8
-								)");
-			if(mysql_query($sqlQuery, $GLOBALS['sql'])) {
-				echo "table created";
-			} else {
-				echo mysql_error();
-			};
+		public function __construct() {
+			
 		}
 		
 		/*
@@ -59,17 +38,17 @@
 		/*
 		*	根据vid获取视频
 		*/
-		public function getVideoByVid() {
-			if (isset($this -> $vid)){
-				$sqlQuery = sprintf("SELECT * FROM video WHERE id=%d", $this -> $vid);
-				$result = mysql_query($sqlQuey, $con);
-				$row = mysql_fetch_array($result);
-				$this -> $upid = $row['upid'];
-				$this -> $playtime = $row['playtime'];
-				$this -> $point = $row['point'];
-				$this -> $title = $row['title'];
-				$this -> $description = $row['description'];
-			}
+		public function getVideoByVid($vid) {
+			Database::connectDatabase();
+			Database::useDatabase();
+			$sql = Database::$sql;
+			$sqlQuery = sprintf("SELECT * FROM video WHERE id=%d", $vid);
+			$result = mysqli_query($sql, $sqlQuery);
+			$row = mysqli_fetch_array($result);
+			//print_r($row);
+			$this -> vid = $vid;
+			$this -> title = $row['title'];
+			$this -> description = $row['description'];
 		}
 		/*
 		*	更新视频信息
@@ -78,7 +57,7 @@
 			$sqlQuery = sprintf("UPDATE video
 								SET title=%s, description=%s", $this -> $title, $this -> $description);
 			$sqlQuery = mysql_real_escape_string($sqlQuery);
-			mysql_query($sqlQuery, $con);
+			mysqli_query($con, $sqlQuery);
 		}
 
 	}
