@@ -360,9 +360,9 @@ var player = function () {
 			panel: function (a, b) {
 				if (a == 'volume') {
 					if (b == 'display') {
-						document.getElementById('volume').style.display = 'block';
+						document.getElementById('volumeback').style.display = 'block';
 					} else if (b == 'hide') {
-						document.getElementById('volume').style.display = 'none';
+						document.getElementById('volumeback').style.display = 'none';
 					}
 				} else if (a == 'barrageoptionpanel') {
 					if (b == 'display') {
