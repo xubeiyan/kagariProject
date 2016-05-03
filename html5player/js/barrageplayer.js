@@ -54,7 +54,7 @@ var player = function () {
 				if (barrageArray[1] == '4') {
 					barrageContent = barrageContent.split('|')[1].split(':')[1];
 				}
-				barragePanel.innerHTML += '<div><span class="barrage-time">' + secondsFormat(barrageArray[0]) + '</span><span class="barrage-content" title=' + barrageArray[6] + '>' + adjustWidth(barrageContent, 210)+'</span><span class="barrage-date">' + barrageArray[5].slice(5) + '</span></div>\n';
+				barragePanel.innerHTML += '<div><span class="barrage-time">' + secondsFormat(barrageArray[0]) + '</span><span class="barrage-content" title="' + barrageArray[6] + '">' + adjustWidth(barrageContent, 210)+'</span><span class="barrage-date">' + barrageArray[5].slice(5) + '</span></div>\n';
 			}
 		},
 		// 获取合适的通道
@@ -328,7 +328,7 @@ var player = function () {
 				sendBarrageToBackend(barrageObj); // 后台
 			} 
 			
-			barragePanel.innerHTML += '<div><span class="barrage-time">' + secondsFormat(Math.floor(videoSrc.currentTime)) + '</span><span class="barrage-content" title=' + message + '>' + adjustWidth(message, 230) + '</span><span class="barrage-date">' + dateFormat() + '</span></div>\n';
+			barragePanel.innerHTML += '<div><span class="barrage-time">' + secondsFormat(Math.floor(videoSrc.currentTime)) + '</span><span class="barrage-content" title="' + message + '">' + adjustWidth(message, 230) + '</span><span class="barrage-date">' + dateFormat() + '</span></div>\n';
 		},
 		// 发送至后台页面
 		sendBarrageToBackend = function (barrage) {
