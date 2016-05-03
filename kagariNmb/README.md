@@ -43,6 +43,7 @@ kagari Nimingba(匿名版)
 
 ###API设计列表
 >会同时接受JSON和multipart/form-data(因为会上传图片)
+
 ####用户级别:
 * 获取饼干  
   `/api/getCookie`
