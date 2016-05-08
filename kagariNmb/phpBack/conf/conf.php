@@ -11,7 +11,8 @@ $conf = Array(
 			'api/sendPost'
 	),
 	'customUserAgent' => '',
-	'scriptFilename' => 'index.php'
+	'scriptFilename' => 'index.php',
+	'installerPath' => 'install/index.php'
 );
 
 ?>

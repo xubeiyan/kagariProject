@@ -10,7 +10,9 @@ class Error {
 		// 不是指定的UserAgent
 		'notSpecificUserAgent' => 'User Agent String %1 was get...',
 		// 不被允许的API
-		'notAllowedAPI' => 'request a not allowed API: %1...'
+		'notAllowedAPI' => 'request a not allowed API: %1...',
+		// 未安装
+		'notInstalled' => 'kagari Nimingban is not installed, please access $1...'
 	);
 	// 输出错误信息，$name为错误名称，$paras为待输出的信息
 	public static function errMsg($name, $paras) {
