@@ -14,10 +14,10 @@ require 'conf/conf.php'; 	// 引入$conf变量
 require 'lib/error.php';	// 错误信息
  
 // 判断是否执行过安装
-if (file_exists($conf['installerPath'])) {
-	$paras = [$conf['installerPath']];
-	die(Error::errMsg('notInstalled', $paras));
-}
+// if (file_exists($conf['installerPath'])) {
+	// $paras = [$conf['installerPath']];
+	// die(Error::errMsg('notInstalled', $paras));
+// }
 
 require 'lib/database.php';	// 访问数据库
 
@@ -32,6 +32,11 @@ if ($conf['customUserAgent'] != '') {
 		$paras = Array($_SERVER['HTTP_USER_AGENT']);
 		die(Error::errMsg('notSpecificUserAgent', $paras));
 	}	
+}
+// 检查提交API是否为空
+if ($_SERVER['QUERY_STRING'] == '') {
+	$paras = Array('empty');
+	die(Error::errMsg('notAllowedAPI', $paras));
 }
 // 检查提交的API是否在指定的API列表内
 $queryString = explode("=", $_SERVER['QUERY_STRING'])[1];

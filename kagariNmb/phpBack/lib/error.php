@@ -9,6 +9,7 @@ class Error {
 		'requestInvalidURI' => 'request URI expects to be %1, but %2 was get...',
 		// 不是指定的UserAgent
 		'notSpecificUserAgent' => 'User Agent String %1 was get...',
+		
 		// 不被允许的API
 		'notAllowedAPI' => 'request a not allowed API: %1...',
 		// 未安装
