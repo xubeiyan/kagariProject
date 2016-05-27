@@ -10,6 +10,6 @@ if (!$con) {
 	die(mysqli_connect_error());
 }
 
-echo 'Success...' . mysqli_get_host_info($con) . "\n";
+//echo 'Success...' . mysqli_get_host_info($con) . "<br />";
 
 ?>

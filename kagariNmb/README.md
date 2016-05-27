@@ -50,7 +50,25 @@ kagari Nimingba(匿名版)
 * 获取板块列表  
   `/api/getAreaLists`   
 提交内容：(暂无)  
-
+返回内容：(举例)    
+	{
+		"request": "getAreaList", 
+		"response": {
+			"timestamp": "2016-05-24 13:53",
+			"area": [
+			{
+				"area_id": 1,
+				"area_name": "综合",
+				"parent_area": ""
+			},
+			{
+				"area_id": 2,
+				"area_name": "综合版1",
+				"parent_area": 1
+			}]
+		}
+	}
+	
 * 获取板块串   
   `/api/getAreaPosts`  
 提交内容：  

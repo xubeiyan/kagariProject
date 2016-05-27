@@ -24,7 +24,9 @@ $conf = Array(
 	),
 	'customUserAgent' => '',
 	'scriptFilename' => 'index.php',
-	'installerPath' => 'install/install.php'
+	'installerPath' => 'install/install.php',
+	'allowedRequest' => 'GET|POST',
+	'responseType' => 'json'
 );
 
 ?>
