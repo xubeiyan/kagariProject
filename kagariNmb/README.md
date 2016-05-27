@@ -32,7 +32,6 @@ kagari Nimingba(匿名版)
 * area_id(所属区名称), 
 * user_id(发布用户名称), 
 * reply_post_id(跟串id，就是是在哪个串下面的ID，没有则是主串), 
-* send_time(发布时间), 
 * author_name(作者名), 
 * author_email(作者邮箱名), 
 * post_title(串标题), 
@@ -55,8 +54,8 @@ kagari Nimingba(匿名版)
 	{
 		"request": "getAreaList", 
 		"response": {
-			"timestamp": "2016-05-24 13:53",
-			"area": [
+			"timestamp": "2016-05-24 13:53:05",
+			"areas": [
 			{
 				"area_id": 1,
 				"area_name": "综合",
@@ -73,15 +72,88 @@ kagari Nimingba(匿名版)
 
 * 获取板块串   
   `/api/getAreaPosts`  
-提交内容：  
+提交内容： 
   `area_id`    
-  `area_page`   
+  `area_page` 
+返回内容：  
+	```javascript
+	{
+		"request": "getAreaPosts",
+		"response": {
+			"timestamp": "2016-05-27 16:26:24",
+			"area_id": 2,
+			"area_name": "综合版1",
+			"area_page": 1,
+			"posts_per_page": 50,
+			"posts": [{
+				"post_id": 10000,
+				"post_title": "无标题",
+				"post_content": "aaabbbccc",
+				"post_images": ["1.png"],
+				"user_id": 1,
+				"user_name": "1wuQKIZ",
+				"author_name": "无名氏",
+				"author_email": "",
+				"create_time": "2016-05-27 16:37:45",
+				"update_time": "2016-05-27 16:38:56",
+				"reply_num": 2,
+				"reply_recent_posts": [{
+					"post_id": 10001,
+					"user_id": 1,
+					"user_name": "1wuQKIZ",
+					"author_name": "无名氏",
+					"author_email": "",
+					"post_title": "无标题",
+					"post_content": "dddeeefff",
+					"post_images": ["2.png", "3.jpg"],
+					"create_time": "2016-05-27 16:38:45",
+					"update_time": "2016-05-27 16:39:56",
+				},
+				{
+					"post_id": 10002,
+					"user_id": 2,
+					"user_name": "1mjIUYJ",
+					"author_name": "无名氏",
+					"author_email": "",
+					"post_title": "无标题",
+					"post_content": "ggghhhiii",
+					"post_images": [],
+					"create_time": "2016-05-27 16:40:45",
+					"update_time": "2016-05-27 16:41:56",
+				}]
+			},
+			{
+				"post_id": 10003,
+				"post_title": "无标题",
+				"post_content": "aaabbbccc",
+				"post_images": ["1.png"],
+				"user_id": 2,
+				"user_name": "1mjIUYJ",
+				"author_name": "无名氏",
+				"author_email": "",
+				"create_time": "2016-05-27 16:37:45",
+				"update_time": "2016-05-27 16:38:56",
+				"reply_num": 0,
+				"reply_recent_posts": []
+			}]
+		}
+	}
+	```  
 
 * 获取串内容   
   `/api/getPost`   
 提交内容：  
   `post_id`   
   `post_page`    
+返回内容：
+	```javascript
+	{
+		"request": "getPost",
+		"response": {
+			"timestamp": "2016-05-27 17:06:43",
+		}
+	}
+	```
 
 * 发表新串   
   `/api/sendPost`     
