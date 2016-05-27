@@ -51,6 +51,7 @@ kagari Nimingba(匿名版)
   `/api/getAreaLists`   
 提交内容：(暂无)  
 返回内容：(举例)    
+	```javascript
 	{
 		"request": "getAreaList", 
 		"response": {
@@ -68,7 +69,8 @@ kagari Nimingba(匿名版)
 			}]
 		}
 	}
-	
+	```
+
 * 获取板块串   
   `/api/getAreaPosts`  
 提交内容：  
