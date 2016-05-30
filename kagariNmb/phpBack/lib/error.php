@@ -11,13 +11,14 @@ class Error {
 		'notAllowedRequestMethod' => 'request method %1 not allowed...',
 		// 不是指定的UserAgent
 		'notSpecificUserAgent' => 'User Agent String %1 was get...',
-		
 		// 不被允许的API
 		'notAllowedAPI' => 'request a not allowed API: %1...',
 		// 未安装
 		'notInstalled' => 'kagari Nimingban is not installed, please access %1...',
 		// JSON数据格式有误
-		'badJSON' => 'the JSON cannot be decoded...'
+		'badJSON' => 'the JSON cannot be decoded...',
+		// 未找到指定的表
+		'notSelectedTable' => 'the table %1 not found...'
 	);
 	// 输出错误信息，$name为错误名称，$paras为待输出的信息
 	public static function errMsg($name, $paras, $json = true) {

@@ -35,5 +35,7 @@ $areasql = 'CREATE TABLE ' . $conf['dababaseTableName'][1] . ' (
 $postsql = 'CREATE TABLE ' . $conf['dababaseTableName'][2] . ' (
 	
 ) COLLATE utf8_general_ci';
-mysqli_query($con, $sql)
+mysqli_query($con, $usersql);
+mysqli_query($con, $areasql);
+mysqli_query($con, $postsql);
 ?>

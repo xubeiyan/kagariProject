@@ -4,10 +4,13 @@
 */
 class API {
 	/**
-	* 获取饼干
+	* 获取饼干, 需要主动调用？
 	*/
-	public static function getCookies() {
-		
+	public static function getCookie() {
+		$sql = 'SELECT * FORM ' . $conf['databaseTableName']['user'] . ' WHERE ip_address="' . $_SERVER['REMOTE_ADDR']. '" LIMIT 1';
+		if ($result = mysqli_query($con, $sql)) {
+			
+		}
 	}
 	
 	/**

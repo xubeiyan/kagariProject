@@ -10,13 +10,13 @@ $conf = Array(
 	'databaseName' =>		'kagari_Nimingban',
 	'databasePort' =>		'3306',
 	'databaseTableName' => 	Array(
-			'user',
-			'area',
-			'post'
+			'user' => 'user',
+			'area' => 'area',
+			'post' => 'post'
 	),
 	// 匿名版设置
 	'apiLists' => Array(
-			'api/getCookies',
+			'api/getCookie',
 			'api/getAreaLists',
 			'api/getAreaPosts',
 			'api/getPost',
