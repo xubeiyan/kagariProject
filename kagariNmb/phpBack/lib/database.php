@@ -2,9 +2,8 @@
 $con = mysqli_connect(
 	$conf['databaseHost'], 
 	$conf['databaseUsername'], 
-	$conf['databasePassword'],
-	$conf['databaseName'],
-	$conf['databasePort']);
+	$conf['databasePassword']
+	);
 
 if (!$con) {
 	die(mysqli_connect_error());
