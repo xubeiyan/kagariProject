@@ -94,7 +94,7 @@ class API {
 	* 生成一个当前时间戳
 	*/
 	private static function timestamp() {
-		return date("Y-m-d h:i:s");
+		return date("Y-m-d H:i:s");
 	}
 }
 ?>
