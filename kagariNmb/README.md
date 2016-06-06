@@ -46,6 +46,18 @@ kagari Nimingba(匿名版)
 ####用户级别:
 * 获取饼干  
   `/api/getCookie`
+提交内容：(暂无)    
+返回内容：(举例)    
+	```javascript
+	{
+		"request": "getCookie",
+		"response": {
+			"timestamp": "2016-06-06 10:15:34",
+			"ip": "::1",
+			"username": "1abCDEF"
+		}
+	}
+	```
 * 获取板块列表  
   `/api/getAreaLists`   
 提交内容：(暂无)  
@@ -164,3 +176,13 @@ kagari Nimingba(匿名版)
   `post_title`   
   `post_content`(串内容，必需)    
   `post_image`
+ 返回内容：    
+	```javascript
+	{
+		"request": "sendPost",
+		"response": {
+			"timestamp": "2016-06-06 10:50:45",
+			"status": "OK"
+		}
+	}
+	```

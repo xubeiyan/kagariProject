@@ -7,15 +7,18 @@ class API {
 	* 获取饼干, 需要主动调用？
 	*/
 	public static function getCookie() {
-		global $conf, $con;
+		$return['request'] = 'getCookie';
+		$return['response']['timestamp'] = self::timestamp();
+		
+		global $conf, $con;		
 		$ip = $_SERVER['REMOTE_ADDR'];
 		$table = $conf['databaseName'] . '.' . $conf['databaseTableName']['user'];
 		$sql = 'SELECT * FROM ' . $table . ' WHERE ip_address="' . $ip . '"';
 		// 查询访问ip是否在数据库中
 		$result = mysqli_query($con, $sql);
 		if (!empty($row = mysqli_fetch_assoc($result))) {
-			$return['ip'] = $row['ip_address'];
-			$return['username'] = $row['user_name'];
+			$return['response']['ip'] = $row['ip_address'];
+			$return['response']['username'] = $row['user_name'];
 			echo json_encode($return);
 			exit();
 		} else {
@@ -31,8 +34,8 @@ class API {
 			$username = self::randomString($id);
 			$sql = 'INSERT INTO ' . $table . '(ip_address, user_name, block_time, last_post_id) VALUES ("' . $ip . '", "' . $username . '", 0, 0)';
 			if (mysqli_query($con, $sql)) {
-				$return['ip'] = $ip;
-				$return['username'] = $username;
+				$return['response']['ip'] = $ip;
+				$return['response']['username'] = $username;
 				echo json_encode($return);
 				exit();
 			} else {
@@ -45,10 +48,10 @@ class API {
 	* 获取板块列表
 	*/
 	public static function getAreaLists() {
-		for ($i = 0; $i < 100; ++$i) {
-			echo self::randomString($i) . "\n";
-		}
+		$return['request'] = 'getCookie';
+		$return['response']['timestamp'] = self::timestamp();
 		
+		echo json_encode($return);
 		exit();
 	}
 	
@@ -85,6 +88,13 @@ class API {
 		$second = $smallList[($num / count($capitalList)) % count($smallList)];
 		$third = $capitalList[$num % count($capitalList)];
 		return $first . $second . $third;
+	}
+	
+	/**
+	* 生成一个当前时间戳
+	*/
+	private static function timestamp() {
+		return date("Y-m-d h:i:s");
 	}
 }
 ?>
