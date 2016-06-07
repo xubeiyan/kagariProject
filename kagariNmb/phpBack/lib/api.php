@@ -19,7 +19,7 @@ class API {
 		if (!empty($row = mysqli_fetch_assoc($result))) {
 			$return['response']['ip'] = $row['ip_address'];
 			$return['response']['username'] = $row['user_name'];
-			echo json_encode($return);
+			echo json_encode($return, JSON_UNESCAPED_UNICODE);
 			exit();
 		} else {
 			// 未在数据库中
@@ -36,7 +36,7 @@ class API {
 			if (mysqli_query($con, $sql)) {
 				$return['response']['ip'] = $ip;
 				$return['response']['username'] = $username;
-				echo json_encode($return);
+				echo json_encode($return, JSON_UNESCAPED_UNICODE);
 				exit();
 			} else {
 				die(mysqli_error($con));
@@ -48,7 +48,7 @@ class API {
 	* 获取板块列表
 	*/
 	public static function getAreaLists() {
-		$return['request'] = 'getCookie';
+		$return['request'] = 'getAreaLists';
 		$return['response']['timestamp'] = self::timestamp();
 		
 		echo json_encode($return);
@@ -71,9 +71,79 @@ class API {
 	
 	/**
 	* 发表新串
+	* `user_id`(用户id，必需)
+	* `area_id`(区id，必须)
+	* `reply_post_id`(回复串id)
+	* `author_name`   
+	* `author_email`   
+	* `post_title`   
+	* `post_content`(串内容，必需)    
+	* `post_image`
 	*/
-	public static function sendPost() {
+	public static function sendPost($post) {
+		// 返回目标
+		$return['request'] = 'sendPost';
+		$return['response']['timestamp'] = self::timestamp();
+		global $conf, $con;
+		$user_table = $conf['databaseName'] . '.' . $conf['databaseTableName']['user'];
+		$area_table = $conf['databaseName'] . '.' . $conf['databaseTableName']['area'];
+		$post_table = $conf['databaseName'] . '.' . $conf['databaseTableName']['post'];
 		
+		// 检查user_id是否合法，检查其是否对得上ip
+		$user_id = is_numeric($post['user_id']) ? $post['user_id'] : 0;
+		
+		$ip = $_SERVER['REMOTE_ADDR'];
+		$sql = 'SELECT user_id FROM ' . $user_table . ' WHERE ip_address="' . $ip . '" AND user_id=' . $user_id;
+		$result = mysqli_query($con, $sql)
+		// 未找到则返回错误
+		if (empty($row = mysqli_fetch_assoc($result))) {
+			$return['response']['error'] = 'Not exists such user';
+			echo json_encode($return, JSON_UNESCAPED_UNICODE);
+			exit();
+		} 
+		// 检查区id
+		$area_id = is_numeric($post['area_id']) ? $post['area_id'] : 0;
+		$sql = 'SELECT area_id FROM ' . $area_table . ' WHERE area_id=' . $area_id;
+		$result = mysqli_query($con, $sql);
+		if (!$row = mysqli_fetch_assoc($result)) {
+			$return['response']['error'] = 'Not exist such area';
+			echo json_encode($return, JSON_UNESCAPED_UNICODE);
+			exit();
+		}
+		// 检查reply_post_id，只检查不为空的情况
+		$reply_post_id = is_numeric($post['reply_post_id']) ? $post['reply_post_id'] : '';
+		if ($reply_post_id != '') {
+			$sql = 'SELECT reply_post_id FROM ' . $post_table . ' WHERE reply_post_id=' . $reply_post_id;
+			$result = mysqli_query($con, $sql);
+			if (!$row = mysqli_fetch_assoc($result)) {
+				$return['response']['error'] = 'Not such to-reply post id';
+				echo json_encode($return, JSON_UNESCAPED_UNICODE);
+				exit();
+			}
+		}
+		
+		// 补全其他字段
+		$author_name = $post['author_name'] == '' ? $conf['default_author_name'] : $post['author_name'];
+		$post_title = $post['post_title'] == '' ? $conf['default_post_title'] : $post['post_title'];
+		if ($post['post_content'] == '') {
+			$return['response']['error'] = 'content can not be empty';
+			echo json_decode($return, JSON_UNESCAPED_UNICODE);
+			exit();
+		}
+		$post_content = $post['post_content'];
+		$post_image = $post['post_image'];
+		
+		// 发送请求
+		$sql = 'INSERT INTO ' . $post_table . 
+		'(area_id, user_id, reply_post_id, author_name, author_email, post_title, post_content, post_images, create_time, update_time) VALUES (' . 
+		$area_id . ',' . $user_id . ',' . $reply_post_id . ',"' . $author_name . '","' . $author_email . '","' . $post_title . '","' . $post_content . '","' . $post_image . '","' . timestamp() . '","' . timestamp() . '"';
+		if (mysqli_query($con, $sql)) {
+			$return['response']['status'] = $sql;
+			echo json_encode($return, JSON_UNESCAPED_UNICODE);
+			exit();
+		} else {
+			die(mysqli_error($con));
+		}
 	}
 	
 	/**

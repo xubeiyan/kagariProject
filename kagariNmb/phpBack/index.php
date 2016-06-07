@@ -89,7 +89,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 			API::getPost($input);
 			break;
 		case 'api/sendPost':
-			API::sendPost($input);
+			if (isset($input['area_id']) && isset($input['user_id']) && isset($input['reply_post_id']) && isset($input['post_content'])) {
+				API::sendPost($input);				
+			}
 			break;
 		default:
 			die('>w<');
