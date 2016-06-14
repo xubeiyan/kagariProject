@@ -48,10 +48,22 @@ class API {
 	* 获取板块列表
 	*/
 	public static function getAreaLists() {
+		global $conf, $con;
 		$return['request'] = 'getAreaLists';
 		$return['response']['timestamp'] = self::timestamp();
+		$return['response']['areas'] = Array();
 		
-		echo json_encode($return);
+		$areaTable = $conf['databaseName'] . '.' . $conf['databaseTableName']['area'];
+		$sql = 'SELECT area_id, area_name, parent_area FROM ' . $areaTable;
+		$result = mysqli_query($con, $sql);
+		// 返回所有的area
+		for ($row = mysqli_fetch_assoc($result); !empty($row); $row = mysqli_fetch_assoc($result)) {
+			$area['area_id'] = $row['area_id'];
+			$area['area_name'] = $row['area_name'];
+			$area['parent_area'] = $row['parent_area'] != 0 ? $row['parent_area'] : "";
+			array_push($return['response']['areas'], $area);
+		}
+		echo json_encode($return, JSON_UNESCAPED_UNICODE);
 		exit();
 	}
 	
@@ -94,7 +106,7 @@ class API {
 		
 		$ip = $_SERVER['REMOTE_ADDR'];
 		$sql = 'SELECT user_id FROM ' . $user_table . ' WHERE ip_address="' . $ip . '" AND user_id=' . $user_id;
-		$result = mysqli_query($con, $sql)
+		$result = mysqli_query($con, $sql);
 		// 未找到则返回错误
 		if (empty($row = mysqli_fetch_assoc($result))) {
 			$return['response']['error'] = 'Not exists such user';
