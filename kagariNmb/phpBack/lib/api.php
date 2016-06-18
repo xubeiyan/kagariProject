@@ -70,14 +70,34 @@ class API {
 	/**
 	* 获取板块串
 	*/
-	public static function getAreaPosts() {
+	public static function getAreaPosts($post) {
+		$return['request'] = 'getAreaPosts';
+		$return['response']['timestamp'] = self::timestamp();
 		
+		$area_id = is_numeric($post['area_id']) ? $post['area_id'] : 1;
+		$area_page = is_numeric($post['area_page']) ? $post['area_page'] : 0;
+		
+		global $conf, $con;
+		
+		$postTable = $conf['databaseName'] . '.' . $conf['databaseTableName']['post'];
+		$postsPerPage = $conf['postsPerPage'];
+		$sql = 'SELECT * FROM ' . $postTable . ' WHERE area_id=' . $area_id .' LIMIT ' . $postsPerPage . ' OFFSET ' . ($area_page - 1) * $postsPerPage;
+		$result = mysqli_query($con, $sql);
+		// 返回当前页面的所有
+		echo $sql;
+		exit();
 	}
 	
 	/**
 	* 获取串内容
 	*/
-	public static function getPost() {
+	public static function getPost($post) {
+		$return['request'] = 'getPosts';
+		$return['response']['timestamp'] = self::timestamp();
+		
+		if ($post_id <= 0) {
+			//$return['response']['']
+		}
 		
 	}
 	

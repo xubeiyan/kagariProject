@@ -87,7 +87,7 @@ kagari Nimingba(匿名版)
 提交内容：    
   `area_id`    
   `area_page`    
-返回内容：  
+返回内容：(举例)(返回结果)  
 	```javascript
 	{
 		"request": "getAreaPosts",
@@ -151,7 +151,16 @@ kagari Nimingba(匿名版)
 		}
 	}
 	```  
-
+(返回未找到板块)
+	```javascript
+	{
+		"request": "getAreaList",
+		"response": {
+			"timestamp": "2016-06-18 17:19:34",
+			"error": "未找到对应的板块"
+		}
+	}
+	```
 * 获取串内容   
   `/api/getPost`   
 提交内容：  

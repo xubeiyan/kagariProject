@@ -26,7 +26,8 @@ $conf = Array(
 	'scriptFilename' => 'index.php',
 	'installerPath' => 'install/install.php',
 	'allowedRequest' => 'GET|POST',
-	'responseType' => 'json'
+	'responseType' => 'json',
+	'postsPerPage' => 50
 );
 
 ?>
