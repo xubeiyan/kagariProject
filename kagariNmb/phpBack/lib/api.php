@@ -69,13 +69,15 @@ class API {
 	
 	/**
 	* 获取板块串
+	* `area_id`(板块id，必须)  
+	* `area_page`(板块页数，默认是1)
 	*/
 	public static function getAreaPosts($post) {
 		$return['request'] = 'getAreaPosts';
 		$return['response']['timestamp'] = self::timestamp();
 		
 		$area_id = is_numeric($post['area_id']) ? $post['area_id'] : 1;
-		$area_page = is_numeric($post['area_page']) && $post['area_page'] > 0 ? $post['area_page'] : 1;
+		$area_page = isset($post['area_page']) && is_numeric($post['area_page']) && $post['area_page'] > 0 ? $post['area_page'] : 1;
 		
 		global $conf, $con;
 		$userTable = $conf['databaseName'] . '.' . $conf['databaseTableName']['user'];
