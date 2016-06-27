@@ -43,7 +43,7 @@ if (isset($_GET['create_tbl'])) {
 	$postsql = 'CREATE TABLE ' . $conf['databaseTableName']['post'] . ' (
 		post_id int NOT NULL AUTO_INCREMENT,
 		area_id int,
-		user_name varchar(8),
+		user_id int,
 		reply_post_id int,
 		author_name varchar(20),
 		author_email varchar(20),

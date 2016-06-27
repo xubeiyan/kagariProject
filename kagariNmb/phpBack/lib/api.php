@@ -78,6 +78,7 @@ class API {
 		$area_page = is_numeric($post['area_page']) && $post['area_page'] > 0 ? $post['area_page'] : 1;
 		
 		global $conf, $con;
+		$userTable = $conf['databaseName'] . '.' . $conf['databaseTableName']['user'];
 		
 		// 查询所在area是否存在
 		$areaTable = $conf['databaseName'] . '.' . $conf['databaseTableName']['area'];
@@ -102,17 +103,24 @@ class API {
 		$return['response']['posts_per_page'] = $postsPerPage;
 		
 		// 查询所在post表
-		$sql = 'SELECT * FROM ' . $postTable . ' WHERE area_id=' . $area_id .' AND reply_post_id="" LIMIT ' . $postsPerPage . ' OFFSET ' . ($area_page - 1) * $postsPerPage;
+		$sql = 'SELECT * FROM ' . $postTable . ' WHERE area_id=' . $area_id .' AND reply_post_id=0 LIMIT ' . $postsPerPage . ' OFFSET ' . ($area_page - 1) * $postsPerPage;
 		//echo $sql;
 		$result = mysqli_query($con, $sql);
 		
+		$forloop = 0;
 		// 返回当前页面的postPerPage数量的主串
-		for ($row = mysqli_fetch_assoc($result); !empty($row); $row = mysql_fetch_assoc($result)) {
+		for ($row = mysqli_fetch_assoc($result); !empty($row); $row = mysqli_fetch_assoc($result), $forloop += 1) {
+			//print_r($row);
+			$sql = 'SELECT user_name FROM ' . $userTable . ' WHERE user_id=' . $row['user_id'];
+			$userResult = mysqli_query($con, $sql);
+			$userRow = mysqli_fetch_assoc($userResult);
+			
 			$postArray['post_id'] = $row['post_id'];
 			$postArray['post_title'] = $row['post_title'];
 			$postArray['post_content'] = $row['post_content'];
-			$postArray['post_image'] = $row['post_image'];
-			$postArray['user_name'] = $row['user_name'];
+			$postArray['post_images'] = $row['post_images'];
+			$postArray['user_id'] = $row['user_id'];
+			$postArray['user_name'] = $userRow['user_name'];
 			$postArray['author_name'] = $row['author_name'];
 			$postArray['author_email'] = $row['author_email'];
 			$postArray['create_time'] = $row['create_time'];
@@ -122,25 +130,37 @@ class API {
 			
 			// 再次查询reply_post_id=指定值的结果
 			$sql = 'SELECT * FROM ' . $postTable . ' WHERE area_id=' . $area_id . ' AND reply_post_id=' . $row['post_id'] . ' ORDER BY update_time DESC LIMIT ' . $lastReplyPosts;
-			$result = mysqli_query($con, $sql);
+			$replyResult = mysqli_query($con, $sql);
+			//echo $sql;
 			// 如果非空则将其写入reply_recent_post
-			for ($row = mysqli_fetch_assoc($result); !empty($row); $row = mysqli_fetch_assoc($result)) {
-				$replyPostArray['post_id'] = $row['post_id'];
-				$replyPostArray['post_title'] = $row['post_title'];
-				$replyPostArray['post_content'] = $row['post_content'];
-				$replyPostArray['post_image'] = $row['post_image'];
-				$replyPostArray['user_name'] = $row['user_name'];
-				$replyPostArray['author_name'] = $row['author_name'];
-				$replyPostArray['author_email'] = $row['author_email'];
-				$replyPostArray['create_time'] = $row['create_time'];
-				$replyPostArray['update_time'] = $row['update_time'];
+			for ($replyRow = mysqli_fetch_assoc($replyResult); !empty($replyRow); $replyRow = mysqli_fetch_assoc($replyResult)) {
+				//print_r($replyRow);
+				$sql = 'SELECT user_name FROM ' . $userTable . ' WHERE user_id=' . $replyRow['user_id'];
+				$userResult = mysqli_query($con, $sql);
+				$userRow = mysqli_fetch_assoc($userResult);
+				
+				$replyPostArray['post_id'] = $replyRow['post_id'];
+				$replyPostArray['post_title'] = $replyRow['post_title'];
+				$replyPostArray['post_content'] = $replyRow['post_content'];
+				$replyPostArray['post_images'] = $replyRow['post_images'];
+				$replyPostArray['user_id'] = $replyRow['user_id'];
+				$replyPostArray['user_name'] = $userRow['user_name'];
+				$replyPostArray['author_name'] = $replyRow['author_name'];
+				$replyPostArray['author_email'] = $replyRow['author_email'];
+				$replyPostArray['create_time'] = $replyRow['create_time'];
+				$replyPostArray['update_time'] = $replyRow['update_time'];
 				array_push($postArray['reply_recent_post'], $replyPostArray);
+				$postArray['reply_num'] += 1;
 			}
-			$forloop = 1;
+			
+			if (!isset($return['response']['posts'])) {
+				$return['response']['posts'] = Array();
+			}
+			
 			array_push($return['response']['posts'], $postArray);
 		}
 		// 为空则返回
-		if (empty($row) && !isset($forloop)) {
+		if (empty($row) && $forloop == 0) {
 			$return['response']['error'] = 'No posts in area with area_id=' . $area_id;
 			echo json_encode($return, JSON_UNESCAPED_UNICODE);
 			exit();
