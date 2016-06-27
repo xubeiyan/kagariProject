@@ -75,16 +75,77 @@ class API {
 		$return['response']['timestamp'] = self::timestamp();
 		
 		$area_id = is_numeric($post['area_id']) ? $post['area_id'] : 1;
-		$area_page = is_numeric($post['area_page']) ? $post['area_page'] : 0;
+		$area_page = is_numeric($post['area_page']) && $post['area_page'] > 0 ? $post['area_page'] : 1;
 		
 		global $conf, $con;
 		
+		// 查询所在area是否存在
+		$areaTable = $conf['databaseName'] . '.' . $conf['databaseTableName']['area'];
+		$sql = 'SELECT area_id, area_name FROM ' . $areaTable . ' WHERE area_id=' . $area_id;
+		$result = mysqli_query($con, $sql);
+		// 检查结果是否非空
+		if (!empty($row = mysqli_fetch_assoc($result))) {
+			$return['response']['area_id'] = $row['area_id'];
+			$return['response']['area_name'] = $row['area_name'];
+		} else {
+			$return['response']['error'] = 'Not such area with area_id=' . $area_id;
+			echo json_encode($return, JSON_UNESCAPED_UNICODE);
+			exit();
+		}
+		
+		// $postsPerPage为每页post数量，$lastReplyPosts为最多显示多少条post回复
 		$postTable = $conf['databaseName'] . '.' . $conf['databaseTableName']['post'];
 		$postsPerPage = $conf['postsPerPage'];
-		$sql = 'SELECT * FROM ' . $postTable . ' WHERE area_id=' . $area_id .' LIMIT ' . $postsPerPage . ' OFFSET ' . ($area_page - 1) * $postsPerPage;
+		$lastReplyPosts = $conf['lastReplyPosts'];
+		
+		$return['response']['area_page'] = $area_page;
+		$return['response']['posts_per_page'] = $postsPerPage;
+		
+		// 查询所在post表
+		$sql = 'SELECT * FROM ' . $postTable . ' WHERE area_id=' . $area_id .' AND reply_post_id="" LIMIT ' . $postsPerPage . ' OFFSET ' . ($area_page - 1) * $postsPerPage;
+		//echo $sql;
 		$result = mysqli_query($con, $sql);
-		// 返回当前页面的所有
-		echo $sql;
+		
+		// 返回当前页面的postPerPage数量的主串
+		for ($row = mysqli_fetch_assoc($result); !empty($row); $row = mysql_fetch_assoc($result)) {
+			$postArray['post_id'] = $row['post_id'];
+			$postArray['post_title'] = $row['post_title'];
+			$postArray['post_content'] = $row['post_content'];
+			$postArray['post_image'] = $row['post_image'];
+			$postArray['user_name'] = $row['user_name'];
+			$postArray['author_name'] = $row['author_name'];
+			$postArray['author_email'] = $row['author_email'];
+			$postArray['create_time'] = $row['create_time'];
+			$postArray['update_time'] = $row['update_time'];
+			$postArray['reply_num'] = 0;
+			$postArray['reply_recent_post'] = Array();
+			
+			// 再次查询reply_post_id=指定值的结果
+			$sql = 'SELECT * FROM ' . $postTable . ' WHERE area_id=' . $area_id . ' AND reply_post_id=' . $row['post_id'] . ' ORDER BY update_time DESC LIMIT ' . $lastReplyPosts;
+			$result = mysqli_query($con, $sql);
+			// 如果非空则将其写入reply_recent_post
+			for ($row = mysqli_fetch_assoc($result); !empty($row); $row = mysqli_fetch_assoc($result)) {
+				$replyPostArray['post_id'] = $row['post_id'];
+				$replyPostArray['post_title'] = $row['post_title'];
+				$replyPostArray['post_content'] = $row['post_content'];
+				$replyPostArray['post_image'] = $row['post_image'];
+				$replyPostArray['user_name'] = $row['user_name'];
+				$replyPostArray['author_name'] = $row['author_name'];
+				$replyPostArray['author_email'] = $row['author_email'];
+				$replyPostArray['create_time'] = $row['create_time'];
+				$replyPostArray['update_time'] = $row['update_time'];
+				array_push($postArray['reply_recent_post'], $replyPostArray);
+			}
+			$forloop = 1;
+			array_push($return['response']['posts'], $postArray);
+		}
+		// 为空则返回
+		if (empty($row) && !isset($forloop)) {
+			$return['response']['error'] = 'No posts in area with area_id=' . $area_id;
+			echo json_encode($return, JSON_UNESCAPED_UNICODE);
+			exit();
+		}
+		echo json_encode($return, JSON_UNESCAPED_UNICODE);
 		exit();
 	}
 	

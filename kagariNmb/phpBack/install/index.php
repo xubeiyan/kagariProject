@@ -43,7 +43,7 @@ if (isset($_GET['create_tbl'])) {
 	$postsql = 'CREATE TABLE ' . $conf['databaseTableName']['post'] . ' (
 		post_id int NOT NULL AUTO_INCREMENT,
 		area_id int,
-		user_id int,
+		user_name varchar(8),
 		reply_post_id int,
 		author_name varchar(20),
 		author_email varchar(20),
@@ -54,6 +54,8 @@ if (isset($_GET['create_tbl'])) {
 		update_time varchar(20),
 		PRIMARY KEY(post_id)
 	) COLLATE utf8_general_ci';
+	
+	$postidSql = 'ALTER TABLE ' . $conf['databaseTableName']['post'] . 'AUTO_INCREMENT=10000';
 
 	if(!mysqli_query($con, $usersql)) {
 		die(mysqli_connect_error());
@@ -70,7 +72,8 @@ if (isset($_GET['create_tbl'])) {
 	if(!mysqli_query($con, $postsql)) {
 		die(mysqli_connect_error());
 	} else {
-		echo "create table " . $conf['databaseTableName']['post'] . " successfully!";
+		mysqli_query($con, $postidSql);
+		echo "create table " . $conf['databaseTableName']['post'] . " successfully! and the start id of post has been changed to 10000!";
 	}
 }
 

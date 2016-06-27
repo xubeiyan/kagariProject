@@ -27,7 +27,8 @@ $conf = Array(
 	'installerPath' => 'install/install.php',
 	'allowedRequest' => 'GET|POST',
 	'responseType' => 'json',
-	'postsPerPage' => 50
+	'postsPerPage' => 50,
+	'lastReplyPosts' => 8 // 最多显示多少条post的回复
 );
 
 ?>
