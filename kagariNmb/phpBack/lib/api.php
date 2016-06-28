@@ -103,6 +103,7 @@ class API {
 		
 		$return['response']['area_page'] = intval($area_page);
 		$return['response']['posts_per_page'] = intval($postsPerPage);
+		$return['response']['last_reply_posts'] = intval($lastReplyPosts);
 		$return['response']['posts'] = Array();
 		
 		// 查询所在post表
@@ -118,6 +119,11 @@ class API {
 			$userResult = mysqli_query($con, $sql);
 			$userRow = mysqli_fetch_assoc($userResult);
 			
+			$sql = 'SELECT COUNT(post_id) FROM ' . $postTable . ' WHERE reply_post_id=' . $row['post_id'];
+			$replyNumResult = mysqli_query($con, $sql); 
+			$replyNum = mysqli_fetch_assoc($replyNumResult);
+			//print_r($replyNum);
+			
 			$postArray['post_id'] = intval($row['post_id']);
 			$postArray['post_title'] = $row['post_title'];
 			$postArray['post_content'] = $row['post_content'];
@@ -128,7 +134,7 @@ class API {
 			$postArray['author_email'] = $row['author_email'];
 			$postArray['create_time'] = $row['create_time'];
 			$postArray['update_time'] = $row['update_time'];
-			$postArray['reply_num'] = 0;
+			$postArray['reply_num'] = intval($replyNum['COUNT(post_id)']);
 			$postArray['reply_recent_post'] = Array();
 			
 			// 再次查询reply_post_id=指定值的结果，但结果是降序的，思考修改方法中
@@ -153,7 +159,7 @@ class API {
 				$replyPostArray['create_time'] = $replyRow['create_time'];
 				$replyPostArray['update_time'] = $replyRow['update_time'];
 				array_push($postArray['reply_recent_post'], $replyPostArray);
-				$postArray['reply_num'] += 1;
+				//$postArray['reply_num'] += 1;
 			}
 			// 倒序reply_recent_post
 			$postArray['reply_recent_post'] = array_reverse($postArray['reply_recent_post']);
@@ -171,15 +177,37 @@ class API {
 	
 	/**
 	* 获取串内容
+	* `post_id`
+	* `post_page`
 	*/
 	public static function getPost($post) {
 		$return['request'] = 'getPosts';
 		$return['response']['timestamp'] = self::timestamp();
 		
-		if ($post_id <= 0) {
-			//$return['response']['']
+		if (!isset($post['post_id']) && !is_numeric($post['post_id']) && $post['post_id'] < 10000) {
+			$return['response']['error'] = 'No such posts found';
+			echo json_encode($return);
+			exit();
+		} else {
+			$post_id = $post['post_id'];
 		}
 		
+		$post_page = isset($post['post_page']) && is_numeric($post['post_page']) && $post['post_page'] > 0 ? $post['post_page'] : 1;
+		
+		global $con, $conf;
+		
+		$userTable = $conf['databaseName'] . '.' . $conf['databaseTableName']['user'];
+		$postTable = $conf['databaseName'] . '.' . $conf['databaseTableName']['post'];
+		// 查询所在post表
+		$sql = 'SELECT * FROM ' . $postTable . ' WHERE post_id=' . $post_id .' OR reply_post_id=' . $post_id . ' LIMIT ' . $postsPerPage . ' OFFSET ' . ($post_page - 1) * $postsPerPage;
+		//echo $sql;
+		$result = mysqli_query($con, $sql);
+		
+		// 主贴处理
+		$mainPostRow = mysqli_fetch_assoc($result);
+		
+		// 回帖处理
+		//if ($replyPostRow) 
 	}
 	
 	/**

@@ -166,14 +166,24 @@ kagari Nimingba(匿名版)
 提交内容：  
   `post_id`   
   `post_page`    
-返回内容：
+返回内容：(举例)(返回结果)     
 	```javascript
 	{
 		"request": "getPost",
 		"response": {
 			"timestamp": "2016-05-27 17:06:43",
 			"post_id": 10000,
-			"post_page": 1
+			"post_page": 1,
+		}
+	}
+	```
+(返回未找到帖子)
+	```javascript
+	{
+		"request": "getPost",
+		"response": {
+			"timestamp": "2016-06-28 11:05:12",
+			"error": "未找到相应帖子"
 		}
 	}
 	```
