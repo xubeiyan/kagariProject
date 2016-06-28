@@ -29,8 +29,8 @@ kagari Nimingba(匿名版)
 
 ######post:(串)
 * post_id(primary key), 
-* area_id(所属区名称), 
-* user_name(发布用户名称), 
+* area_id(所属区id), 
+* user_id(发布用户id), 
 * reply_post_id(跟串id，就是是在哪个串下面的ID，没有则是主串), 
 * author_name(作者名), 
 * author_email(作者邮箱名), 
