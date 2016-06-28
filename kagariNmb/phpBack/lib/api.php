@@ -88,7 +88,7 @@ class API {
 		$result = mysqli_query($con, $sql);
 		// 检查结果是否非空
 		if (!empty($row = mysqli_fetch_assoc($result))) {
-			$return['response']['area_id'] = $row['area_id'];
+			$return['response']['area_id'] = intval($row['area_id']);
 			$return['response']['area_name'] = $row['area_name'];
 		} else {
 			$return['response']['error'] = 'Not such area with area_id=' . $area_id;
@@ -101,8 +101,8 @@ class API {
 		$postsPerPage = $conf['postsPerPage'];
 		$lastReplyPosts = $conf['lastReplyPosts'];
 		
-		$return['response']['area_page'] = $area_page;
-		$return['response']['posts_per_page'] = $postsPerPage;
+		$return['response']['area_page'] = intval($area_page);
+		$return['response']['posts_per_page'] = intval($postsPerPage);
 		$return['response']['posts'] = Array();
 		
 		// 查询所在post表
@@ -118,11 +118,11 @@ class API {
 			$userResult = mysqli_query($con, $sql);
 			$userRow = mysqli_fetch_assoc($userResult);
 			
-			$postArray['post_id'] = $row['post_id'];
+			$postArray['post_id'] = intval($row['post_id']);
 			$postArray['post_title'] = $row['post_title'];
 			$postArray['post_content'] = $row['post_content'];
 			$postArray['post_images'] = $row['post_images'];
-			$postArray['user_id'] = $row['user_id'];
+			$postArray['user_id'] = intval($row['user_id']);
 			$postArray['user_name'] = $userRow['user_name'];
 			$postArray['author_name'] = $row['author_name'];
 			$postArray['author_email'] = $row['author_email'];
@@ -142,11 +142,11 @@ class API {
 				$userResult = mysqli_query($con, $sql);
 				$userRow = mysqli_fetch_assoc($userResult);
 				
-				$replyPostArray['post_id'] = $replyRow['post_id'];
+				$replyPostArray['post_id'] = intval($replyRow['post_id']);
 				$replyPostArray['post_title'] = $replyRow['post_title'];
 				$replyPostArray['post_content'] = $replyRow['post_content'];
 				$replyPostArray['post_images'] = $replyRow['post_images'];
-				$replyPostArray['user_id'] = $replyRow['user_id'];
+				$replyPostArray['user_id'] = intval($replyRow['user_id']);
 				$replyPostArray['user_name'] = $userRow['user_name'];
 				$replyPostArray['author_name'] = $replyRow['author_name'];
 				$replyPostArray['author_email'] = $replyRow['author_email'];
@@ -155,6 +155,7 @@ class API {
 				array_push($postArray['reply_recent_post'], $replyPostArray);
 				$postArray['reply_num'] += 1;
 			}
+			// 倒序reply_recent_post
 			$postArray['reply_recent_post'] = array_reverse($postArray['reply_recent_post']);
 			array_push($return['response']['posts'], $postArray);
 		}

@@ -172,6 +172,8 @@ kagari Nimingba(匿名版)
 		"request": "getPost",
 		"response": {
 			"timestamp": "2016-05-27 17:06:43",
+			"post_id": 10000,
+			"post_page": 1
 		}
 	}
 	```
