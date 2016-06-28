@@ -103,6 +103,7 @@ class API {
 		
 		$return['response']['area_page'] = $area_page;
 		$return['response']['posts_per_page'] = $postsPerPage;
+		$return['response']['posts'] = Array();
 		
 		// 查询所在post表
 		$sql = 'SELECT * FROM ' . $postTable . ' WHERE area_id=' . $area_id .' AND reply_post_id=0 LIMIT ' . $postsPerPage . ' OFFSET ' . ($area_page - 1) * $postsPerPage;
@@ -130,7 +131,7 @@ class API {
 			$postArray['reply_num'] = 0;
 			$postArray['reply_recent_post'] = Array();
 			
-			// 再次查询reply_post_id=指定值的结果
+			// 再次查询reply_post_id=指定值的结果，但结果是降序的，思考修改方法中
 			$sql = 'SELECT * FROM ' . $postTable . ' WHERE area_id=' . $area_id . ' AND reply_post_id=' . $row['post_id'] . ' ORDER BY update_time DESC LIMIT ' . $lastReplyPosts;
 			$replyResult = mysqli_query($con, $sql);
 			//echo $sql;
@@ -154,11 +155,7 @@ class API {
 				array_push($postArray['reply_recent_post'], $replyPostArray);
 				$postArray['reply_num'] += 1;
 			}
-			
-			if (!isset($return['response']['posts'])) {
-				$return['response']['posts'] = Array();
-			}
-			
+			$postArray['reply_recent_post'] = array_reverse($postArray['reply_recent_post']);
 			array_push($return['response']['posts'], $postArray);
 		}
 		// 为空则返回
