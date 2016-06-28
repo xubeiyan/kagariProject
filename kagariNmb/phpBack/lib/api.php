@@ -137,7 +137,7 @@ class API {
 			$postArray['reply_num'] = intval($replyNum['COUNT(post_id)']);
 			$postArray['reply_recent_post'] = Array();
 			
-			// 再次查询reply_post_id=指定值的结果，但结果是降序的，思考修改方法中
+			// 再次查询reply_post_id=指定值的结果，但结果是降序的，已搞定
 			$sql = 'SELECT * FROM ' . $postTable . ' WHERE area_id=' . $area_id . ' AND reply_post_id=' . $row['post_id'] . ' ORDER BY update_time DESC LIMIT ' . $lastReplyPosts;
 			$replyResult = mysqli_query($con, $sql);
 			//echo $sql;
@@ -178,7 +178,7 @@ class API {
 	/**
 	* 获取串内容
 	* `post_id`
-	* `post_page`
+	* `post_page` (默认为1)
 	*/
 	public static function getPost($post) {
 		$return['request'] = 'getPosts';
@@ -186,7 +186,7 @@ class API {
 		
 		if (!isset($post['post_id']) && !is_numeric($post['post_id']) && $post['post_id'] < 10000) {
 			$return['response']['error'] = 'No such posts found';
-			echo json_encode($return);
+			echo json_encode($return, JSON_UNESCAPED_UNICODE);
 			exit();
 		} else {
 			$post_id = $post['post_id'];
@@ -198,16 +198,65 @@ class API {
 		
 		$userTable = $conf['databaseName'] . '.' . $conf['databaseTableName']['user'];
 		$postTable = $conf['databaseName'] . '.' . $conf['databaseTableName']['post'];
+		$postsPerPage = $conf['postsPerPage'];
 		// 查询所在post表
-		$sql = 'SELECT * FROM ' . $postTable . ' WHERE post_id=' . $post_id .' OR reply_post_id=' . $post_id . ' LIMIT ' . $postsPerPage . ' OFFSET ' . ($post_page - 1) * $postsPerPage;
+		$sql = 'SELECT * FROM ' . $postTable . ' WHERE post_id=' . $post_id .' AND reply_post_id=0 LIMIT 1';
 		//echo $sql;
 		$result = mysqli_query($con, $sql);
 		
 		// 主贴处理
-		$mainPostRow = mysqli_fetch_assoc($result);
+		if (empty($mainPostRow = mysqli_fetch_assoc($result))) {
+			$return['response']['error'] = 'No such posts found with post_id ' . $post_id;
+			echo json_encode($return, JSON_UNESCAPED_UNICODE);
+			exit();
+		}
+		
+		// 从里面获取用户名
+		$sql = 'SELECT user_name FROM ' . $userTable . ' WHERE user_id=' . $mainPostRow['user_id'];
+		$userResult = mysqli_query($con, $sql);
+		$userResultRow = mysqli_fetch_assoc($userResult);
+		
+		$return['response']['post_id'] = intval($post_id);
+		$return['response']['post_page'] = intval($post_page);
+		$return['response']['postsPerPage'] = intval($postsPerPage);
+		$return['response']['post_title'] = $mainPostRow['post_title'];
+		$return['response']['post_content'] = $mainPostRow['post_content'];
+		$return['response']['post_images'] = $mainPostRow['post_images'];
+		$return['response']['user_id'] = $mainPostRow['user_id'];
+		$return['response']['user_name'] = $userResultRow['user_name'];
+		$return['response']['author_name'] = $mainPostRow['author_name'];
+		$return['response']['author_email'] = $mainPostRow['author_email'];
+		$return['response']['create_time'] = $mainPostRow['create_time'];
+		$return['response']['update_time'] = $mainPostRow['update_time'];
+		$return['response']['reply_num'] = 0;
+		$return['response']['reply_recent_posts'] = Array();
 		
 		// 回帖处理
-		//if ($replyPostRow) 
+		$sql = 'SELECT * FROM ' . $postTable . ' WHERE reply_post_id=' . $post_id . ' ORDER BY update_time ASC LIMIT ' . $postsPerPage . ' OFFSET ' . ($post_page - 1) * $postsPerPage;
+		$replyResult = mysqli_query($con, $sql);
+		//echo $sql;
+		
+		for ($replyRow = mysqli_fetch_assoc($replyResult); !empty($replyRow); $replyRow = mysqli_fetch_assoc($replyResult)) {
+			$sql = 'SELECT user_name FROM ' . $userTable . ' WHERE user_id=' . $replyRow['user_id'];
+			$userResult = mysqli_query($con, $sql);
+			$userResultRow = mysqli_fetch_assoc($userResult);
+			
+			$replyArray['post_id'] = $replyRow['post_id'];
+			$replyArray['user_id'] = $replyRow['user_id'];
+			$replyArray['user_name'] = $userResultRow['user_name'];
+			$replyArray['author_name'] = $replyRow['author_name'];
+			$replyArray['author_email'] = $replyRow['author_email'];
+			$replyArray['post_title'] = $replyRow['post_title'];
+			$replyArray['post_content'] = $replyRow['post_content'];
+			$replyArray['post_images'] = $replyRow['post_images'];
+			$replyArray['create_time'] = $replyRow['create_time'];
+			$replyArray['update_time'] = $replyRow['update_time'];
+			array_push($return['response']['reply_recent_posts'], $replyArray);
+			$return['response']['reply_num'] += 1;
+		}
+		
+		echo json_encode($return, JSON_UNESCAPED_UNICODE);
+		exit();
 	}
 	
 	/**
@@ -268,7 +317,7 @@ class API {
 		$post_title = $post['post_title'] == '' ? $conf['default_post_title'] : $post['post_title'];
 		if ($post['post_content'] == '') {
 			$return['response']['error'] = 'content can not be empty';
-			echo json_decode($return, JSON_UNESCAPED_UNICODE);
+			echo json_encode($return, JSON_UNESCAPED_UNICODE);
 			exit();
 		}
 		$post_content = $post['post_content'];
