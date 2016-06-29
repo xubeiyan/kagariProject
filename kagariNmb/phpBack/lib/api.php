@@ -285,6 +285,7 @@ class API {
 		$ip = $_SERVER['REMOTE_ADDR'];
 		$sql = 'SELECT user_id FROM ' . $user_table . ' WHERE ip_address="' . $ip . '" AND user_id=' . $user_id;
 		$result = mysqli_query($con, $sql);
+		//echo $sql;
 		// 未找到则返回错误
 		if (empty($row = mysqli_fetch_assoc($result))) {
 			$return['response']['error'] = 'Not exists such user';
@@ -314,6 +315,7 @@ class API {
 		
 		// 补全其他字段
 		$author_name = $post['author_name'] == '' ? $conf['default_author_name'] : $post['author_name'];
+		$author_email = $post['author_email'];
 		$post_title = $post['post_title'] == '' ? $conf['default_post_title'] : $post['post_title'];
 		if ($post['post_content'] == '') {
 			$return['response']['error'] = 'content can not be empty';
@@ -326,9 +328,10 @@ class API {
 		// 发送请求
 		$sql = 'INSERT INTO ' . $post_table . 
 		'(area_id, user_id, reply_post_id, author_name, author_email, post_title, post_content, post_images, create_time, update_time) VALUES (' . 
-		$area_id . ',' . $user_id . ',' . $reply_post_id . ',"' . $author_name . '","' . $author_email . '","' . $post_title . '","' . $post_content . '","' . $post_image . '","' . timestamp() . '","' . timestamp() . '"';
+		$area_id . ',' . $user_id . ',' . $reply_post_id . ',"' . $author_name . '","' . $author_email . '","' . $post_title . '","' . $post_content . '","' . $post_image . '","' . self::timestamp() . '","' . self::timestamp() . '")';
+		//echo $sql;
 		if (mysqli_query($con, $sql)) {
-			$return['response']['status'] = $sql;
+			$return['response']['status'] = "OK";
 			echo json_encode($return, JSON_UNESCAPED_UNICODE);
 			exit();
 		} else {

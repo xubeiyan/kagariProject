@@ -28,7 +28,9 @@ $conf = Array(
 	'allowedRequest' => 'GET|POST',
 	'responseType' => 'json',
 	'postsPerPage' => 50,
-	'lastReplyPosts' => 8 // 最多显示多少条post的回复
+	'lastReplyPosts' => 8, // 最多显示多少条post的回复
+	'default_author_name' => '无名氏',
+	'default_post_title' => '无标题'
 );
 
 ?>
