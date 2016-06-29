@@ -302,7 +302,7 @@ class API {
 			exit();
 		}
 		// 检查reply_post_id，只检查不为空的情况
-		$reply_post_id = is_numeric($post['reply_post_id']) ? $post['reply_post_id'] : '';
+		$reply_post_id = isset($post['reply_post_id']) && is_numeric($post['reply_post_id']) ? $post['reply_post_id'] : 0;
 		if ($reply_post_id != 0) {
 			$sql = 'SELECT reply_post_id FROM ' . $post_table . ' WHERE post_id=' . $reply_post_id;
 			$result = mysqli_query($con, $sql);

@@ -228,13 +228,13 @@ kagari Nimingba(匿名版)
 提交内容：   
   `user_id`(用户id，必需)   
   `area_id`(分区id，必需)     
-  `reply_post_id`(回复还是新帖，新帖为0，必需)
+  `reply_post_id`(回复还是新串，新串为0，为空则为0)
   `author_name`   
   `author_email`   
   `post_title`   
   `post_content`(串内容，必需)    
   `post_image`
- 返回内容：    
+ 返回内容：(正常回帖)    
 	```javascript
 	{
 		"request": "sendPost",
@@ -244,3 +244,24 @@ kagari Nimingba(匿名版)
 		}
 	}
 	```
+(不存在的帖子)     
+	```javascript
+	{
+		"request": "sendPost",
+		"response": {
+			"timestamp": "2016-06-29 13:17:09",
+			"error": "回复串不存在"
+		}
+	}
+	```
+(所在的帖子为回复帖子)     
+	```javascript
+	{
+		"request": "sendPost",
+		"response": {
+			"timestamp": "2016-06-29 13:21:35",
+			"error": "回复的串不是主串"
+		}
+	}
+	```
+
