@@ -303,11 +303,17 @@ class API {
 		}
 		// 检查reply_post_id，只检查不为空的情况
 		$reply_post_id = is_numeric($post['reply_post_id']) ? $post['reply_post_id'] : '';
-		if ($reply_post_id != '') {
-			$sql = 'SELECT reply_post_id FROM ' . $post_table . ' WHERE reply_post_id=' . $reply_post_id;
+		if ($reply_post_id != 0) {
+			$sql = 'SELECT reply_post_id FROM ' . $post_table . ' WHERE post_id=' . $reply_post_id;
 			$result = mysqli_query($con, $sql);
-			if (!$row = mysqli_fetch_assoc($result)) {
-				$return['response']['error'] = 'Not such to-reply post id';
+			// 先检查回帖是否存在
+			if (empty($row = mysqli_fetch_assoc($result))) {
+				$return['response']['error'] = 'Post not exists';
+				echo json_encode($return, JSON_UNESCAPED_UNICODE);
+				exit();
+			// 再检查回复的帖子是否为主贴
+			} else if ($row['reply_post_id'] != 0) {
+				$return['response']['error'] = 'Post is reply post';
 				echo json_encode($return, JSON_UNESCAPED_UNICODE);
 				exit();
 			}

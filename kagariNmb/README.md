@@ -226,7 +226,9 @@ kagari Nimingba(匿名版)
 * 发表新串   
   `/api/sendPost`     
 提交内容：   
-  `user_id`(用户id，必需)      
+  `user_id`(用户id，必需)   
+  `area_id`(分区id，必需)     
+  `reply_post_id`(回复还是新帖，新帖为0，必需)
   `author_name`   
   `author_email`   
   `post_title`   
