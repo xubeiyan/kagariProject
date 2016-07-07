@@ -266,9 +266,9 @@ kagari Nimingba(匿名版)
 	```
 
 * 删除某个串    
-`/api/deletePost`
+`/api/deletePost`    
 提交内容：    
-`post_id`(删除的串的id)
+`post_id`(删除的串的id)     
 返回内容：(删除成功)     
 	```javascript
 	{
