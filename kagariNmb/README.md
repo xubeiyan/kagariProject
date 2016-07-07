@@ -265,3 +265,28 @@ kagari Nimingba(匿名版)
 	}
 	```
 
+* 删除某个串    
+`/api/deletePost`
+提交内容：    
+`post_id`(删除的串的id)
+返回内容：(删除成功)     
+	```javascript
+	{
+		"request": "deletePost",
+		"response": {
+			"timestamp": "2016-07-07 11:53:19",
+			"status": "OK"
+		}
+		
+	}
+	```
+(不存在的帖子)
+	```javascript
+	{
+		"request": "deletePost",
+		"response": {
+			"timestamp": "2016-07-07 11:53:25",
+			"error": "删除的串不存在"
+		}
+	}
+	```

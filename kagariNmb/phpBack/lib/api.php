@@ -346,6 +346,45 @@ class API {
 	}
 	
 	/**
+	* 删除串
+	*/
+	public static function deletePost($post) {
+		// 返回目标
+		$return['request'] = 'deletePost';
+		$return['response']['timestamp'] = self::timestamp();
+		
+		$post_id = is_numeric($post['post_id']) && $post['post_id'] > 0 ? $post['post_id'] : 0;
+		
+		global $con, $conf;
+		$postTable = $conf['databaseName'] . '.' . $conf['databaseTableName']['user'];
+		
+		// 查询指定的串
+		$sql = 'SELECT reply_post_id FROM ' . $postTable . ' WHERE post_id=' . $post_id;
+		$result = mysqli_query($con, $sql);
+		
+		// 为空返回
+		if (empty($row = mysqli_fetch_assoc($result))) {
+			$return['response']['error'] = 'to delete post not exists';
+			echo json_encode($return, JSON_UNESCAPED_UNICODE);
+			exit();
+		}
+		
+		// 为0表示这是主串，需要删除回复
+		if ($row['reply_post_id'] == 0) {
+			$sql = 'DELETE FROM ' . $postTable . ' WHERE reply_post_id=' . $post_id;
+			$result = mysqli_query($con, $sql);
+			print_r($result);
+		}
+		
+		// 删除该记录
+		$sql = 'DELETE FROM ' . $postTable . ' WHERE post_id=' . $post_id;
+		$result = mysqli_query($con, $sql);
+		print_r($result);
+		$return['response']['status'] = 'OK';
+		echo json_encode($return, JSON_UNESCAPED_UNICODE);
+		exit();
+	}
+	/**
 	* 获得某个数字对应的用户名
 	*/
 	private static function randomString($num) {

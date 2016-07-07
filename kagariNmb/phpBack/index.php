@@ -93,6 +93,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 				API::sendPost($input);				
 			}
 			break;
+		case 'api/deletePost':
+			API::deletePost($input);
+			break;
 		default:
 			die('>w<');
 	}
