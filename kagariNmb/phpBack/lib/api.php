@@ -335,6 +335,13 @@ class API {
 		$sql = 'INSERT INTO ' . $post_table . 
 		'(area_id, user_id, reply_post_id, author_name, author_email, post_title, post_content, post_images, create_time, update_time) VALUES (' . 
 		$area_id . ',' . $user_id . ',' . $reply_post_id . ',"' . $author_name . '","' . $author_email . '","' . $post_title . '","' . $post_content . '","' . $post_image . '","' . self::timestamp() . '","' . self::timestamp() . '")';
+		// 如果reply_post_id不为0，更新主串update_time
+		if ($reply_post_id != 0) {
+			$updatesql = 'UPDATE ' . $post_table . ' SET update_time=' . self::timestamp() . ' WHERE post_id=' . $reply_post_id;
+			if (!mysqli_query($con, $updatesql)) {
+				mysqli_error();
+			}
+		}
 		//echo $sql;
 		if (mysqli_query($con, $sql)) {
 			$return['response']['status'] = "OK";
