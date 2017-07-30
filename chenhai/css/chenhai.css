@@ -1,0 +1,79 @@
+body {
+	margin-left: auto;
+	margin-right: auto;
+	width: 1000px;
+	background-color: #EEE;
+}
+
+/* 页眉 */
+header {
+	padding-left: 1em;
+	padding-right: 1em;
+}
+
+/* 导航 */
+nav {
+
+}
+
+nav ul {
+	list-style-type: none;
+	padding-left: 1em;
+	padding-right: 1em;
+}
+
+nav ul li{
+	display: inline-block;
+}
+
+/* 页中内容 */
+main {
+	padding-left: 1em;
+	padding-right: 1em;
+	min-height: 400px;
+}
+
+/* 页脚 */
+footer {
+	
+}
+
+footer ul{
+	padding-left: 1em;
+	padding-right: 1em;
+	/* display: inline-block; */
+}
+
+footer ul.footer-left {
+	float:left;
+}
+
+footer ul.footer-right {
+	float:right;
+}
+
+footer ul li{
+	list-style-type: none;
+	display: inline-block;
+}
+
+
+/* 列表中超链接 */
+li a {
+	color: #333;
+	text-decoration: none;
+}
+
+li a:hover {
+	color: #000;
+	text-decoration: underline;
+}
+
+span.shadow {
+	text-shadow: 1px 1px 3px #666;
+}
+
+ul {
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
