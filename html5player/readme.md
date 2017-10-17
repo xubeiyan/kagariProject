@@ -2,9 +2,9 @@
 
 ##### 实地测试地址
 ###### 从右至左，上部悬停，下部悬停弹幕测试
-http://yukiyuki.me/kagariProject/html5player/html5player.html 视频源为“Fate/kaleid liner プリズマ☆イリヤ 2wei Herz 命短し腐れよ乙女”（魔法少女伊莉娅第三期）的第三集
+http://mea.moe/kagariProject/html5player/html5player.html 视频源为“Fate/kaleid liner プリズマ☆イリヤ 2wei Herz 命短し腐れよ乙女”（魔法少女伊莉娅第三期）的第三集
 ###### 增加高级弹幕（目前只有字幕弹幕）
-http://yukiyuki.me/kagariProject/html5player/html5player2.html 视频源为“フタコイ オルタナティブ ED ぼくらの時間”（双恋 Alternative ED）   
+http://mea.moe/kagariProject/html5player/html5player2.html 视频源为“フタコイ オルタナティブ ED ぼくらの時間”（双恋 Alternative ED）   
 
 ##### 已完成的：
 1. Chrome、Firefox、IE测试通过（Chrome 48.0.2564.116，Firefox 44.0.2，IE 11.0.28），Edge卡顿严重（摇头，还是等微软更新版本的Edge吧）
