@@ -287,6 +287,11 @@ var player = function () {
 		},
 		// 移动弹幕
 		moveBarrage = function () {
+			var FROMR2L = '1',
+				BOTTOMSTAY = '2',
+				TOPSTAY = '3',
+				ADVANCE = '4';
+				
 			barrage.clearRect(0, 0, 800, 600);
 			for (var i = barragePool.length - 1; i >= 0; --i) {
 				if (barragePool[i].content == '#') {
@@ -306,12 +311,12 @@ var player = function () {
 				barrage.fillStyle = barragePool[i].color;
 				barrage.fillText(barragePool[i].content, barragePool[i].x, barragePool[i].y);
 				
-				if (barragePool[i].type == '1') {
+				if (barragePool[i].type == FROMR2L) {
 					barragePool[i].x -= barragePool[i].speed;
 					if (barragePool[i].x + barrage.measureText(barragePool[i].content).width < 0) {
 						barragePool[i].content = "#";
 					}
-				} else if (barragePool[i].type == '2' || barragePool[i].type == '3' || barragePool[i].type == '4') {
+				} else if (barragePool[i].type == BOTTOMSTAY || barragePool[i].type == TOPSTAY || barragePool[i].type == ADVANCE) {
 					if (barragePool[i].dispearTime - videoSrc.currentTime < 0) {
 						barragePool[i].content = "#";
 					}
