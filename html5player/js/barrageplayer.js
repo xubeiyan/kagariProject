@@ -491,6 +491,9 @@ var player = function () {
 				timeLine.clearRect(0, 0, timeLineWidth, timeLineHeight);
 				playbutton.innerText = 'play';
 				videoPlaying = false;
+				// 这个设置需要还原
+				console.log('end: nextBarrageIndex has set to 0');
+				nextBarrageIndex = 0;
 			}
 			
 		}
