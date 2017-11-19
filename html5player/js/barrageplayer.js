@@ -323,12 +323,64 @@ var player = function () {
 				} 	
 			}
 		},
+		// 绘制时间轴
+		drawTimeLine = function () {
+			var timeLineElement = document.getElementById('timeline'),
+				timeLineBufferColor = '#ddd',
+				timeLinePlayedColor = '#aaf',
+				timeLineMargin = { // 上下左右留白
+					top: 1,
+					bottom: 1,
+					left: 1,
+					right: 1
+				},
+				timeLinePlayed = {
+					x: 0 + timeLineMargin.left,
+					y: 0 + timeLineMargin.top + 5,
+					width: videoSrc.currentTime / videoSrc.duration * (timeLineElement.width - timeLineMargin.left - timeLineMargin.right) + 0 + timeLineMargin.left,
+					height: timeLineElement.height - (timeLineMargin.top + 5) - timeLineMargin.bottom - 5,
+				};
+				
+			timeLine.clearRect(0, 0, timeLineElement.width, timeLineElement.height);
+			timeLine.fillStyle = timeLineBufferColor;
+			
+			for (var i = 0; i < videoSrc.buffered.length; ++i) {
+				var x = videoSrc.buffered.start(i) / videoSrc.duration * (timeLineElement.width - timeLineMargin.right - timeLineMargin.left) + timeLineMargin.left,
+					y = 0 + timeLineMargin.top,
+					width = (videoSrc.buffered.end(i) - videoSrc.buffered.start(i)) / videoSrc.duration * (timeLineElement.width - timeLineMargin.right - timeLineMargin.left), 
+					height = timeLineElement.height - timeLineMargin.top - timeLineMargin.bottom;
+				
+				timeLine.fillRect(x, y, width, height);
+			}
+			
+			timeLine.fillStyle = timeLinePlayedColor;
+
+			timeLine.fillRect(timeLinePlayed.x, timeLinePlayed.y, timeLinePlayed.width, timeLinePlayed.height);	
+			
+		},
+		// 绘制音量条
+		drawVolume = function (value) {
+			var volumeWidth = document.getElementById('volume').width,
+				volumeHeight = document.getElementById('volume').height,
+				volumeBackColor = '#eee',
+				volumeFrontColor = '#315CFF';
+			volumeCanvas.clearRect(0, 0, volumeWidth, volumeHeight);
+			
+			volumeCanvas.fillStyle = volumeBackColor;
+			volumeCanvas.fillRect(0, 0, volumeWidth, volumeHeight);
+			
+			volumeCanvas.fillStyle = volumeFrontColor;
+			volumeCanvas.fillRect(0, value, volumeWidth, volumeHeight);
+			
+			videoSrc.volume = Math.round((volumeHeight - value) / volumeHeight * 100) / 100;
+		},
 		// 绘制每帧
 		drawFrame = function () {
 			// 初始化
 			videoCanvas.drawImage(videoSrc, 0, (videoElementHeight - videoHeight) / 2, videoWidth, videoHeight);
 			videoPlayTime.innerHTML = secondsFormat(videoSrc.currentTime) + '/' + secondsFormat(videoSrc.duration);
-			timeLine.fillRect(1, 1, videoSrc.currentTime / videoSrc.duration * document.getElementById('timeline').width + 1, document.getElementById('timeline').height - 1);
+			//timeLine.fillRect(1, 1, videoSrc.currentTime / videoSrc.duration * document.getElementById('timeline').width + 1, document.getElementById('timeline').height - 1);
+			drawTimeLine();
 			addBarrageToPool(sortedBarrageList);
 			moveBarrage();
 			videoId = window.requestAnimationFrame(drawFrame);
@@ -409,7 +461,7 @@ var player = function () {
 			init: function () {
 				timeLine.fillStyle = '#999';
 				timeLine.font = '16px 微软雅黑';
-				volumeCanvas.fillStyle = '#315CFF';
+				drawVolume(0);
 				volumeCanvas.fillRect(0, 0, document.getElementById('volume').width, document.getElementById('volume').height - 0);
 				// 对弹幕排序
 				sortedBarrageList = sortBarrages(danmuku);
@@ -464,20 +516,15 @@ var player = function () {
 				//console.log("volume:" + videoSrc.volume);
 				// 音量
 				if (item == 'volume') {
-					var volumeWidth = document.getElementById('volume').width,
-						volumeHeight = document.getElementById('volume').height;
-					volumeCanvas.clearRect(0, 0, volumeWidth, volumeHeight);
-					// 决定给留5px的边
-					volumeCanvas.fillRect(0, event.offsetY, volumeWidth, volumeHeight);
-					videoSrc.volume = (volumeHeight  - event.offsetY) / volumeHeight;
-					console.log('clickY:', event.offsetY, 'volume:', videoSrc.volume)
+					drawVolume(event.offsetY);
+					console.log('click:', 'volume change to', videoSrc.volume);
 				// 时间轴
 				} else if (item == 'timeline') {
-					var timeLineWidth = document.getElementById('timeline').width,
-						timeLineHeight = document.getElementById('timeline').height;
-					timeLine.clearRect(0, 0, timeLineWidth, timeLineHeight);
-					timeLine.fillRect(1, 1, event.offsetX, timeLineHeight - 1); // 周围空1像素感觉好看点
-					videoSrc.currentTime = videoSrc.duration * (event.offsetX - 1) / (timeLineWidth - 2);
+					videoSrc.currentTime = videoSrc.duration * (event.offsetX - 1) / (document.getElementById('timeline').width - 2);
+					drawTimeLine();
+					// for (var i = 0; i < videoSrc.buffered.length; ++i) {
+						// console.log('video buffer', i,'from', videoSrc.buffered.start(i), 'to', videoSrc.buffered.end(i));
+					// }
 					nextBarrageIndex = getCurrentBarrageIndex(videoSrc.currentTime);
 				}
 			},
