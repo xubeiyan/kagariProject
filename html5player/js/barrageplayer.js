@@ -456,6 +456,20 @@ var player = function () {
 			req.send(videoStr + "||" +barrageStr);
 			console.log(barrageStr);
 		},
+		// 显示当前弹幕颜色
+		colorPick = function () {
+			var content = document.getElementById('color-picker'),
+				colorValue = document.getElementById('barrage-color').value;
+			// 检查是否以#起始，长度为4或者7
+			if (!(colorValue[0] == '#' && (colorValue.length == 4 || colorValue == 7))) {
+				document.getElementById('barrage-color').value = '#FFF';
+			}
+			if (isNaN(parseInt(colorValue.substring(1), 16))) {
+				document.getElementById('barrage-color').value = '#FFF';
+			}
+			
+			content.style.backgroundColor = colorValue;
+		},
 		that = {
 			// 初始化
 			init: function () {
@@ -464,8 +478,9 @@ var player = function () {
 				drawVolume(0);
 				volumeCanvas.fillRect(0, 0, document.getElementById('volume').width, document.getElementById('volume').height - 0);
 				// 对弹幕排序
-				sortedBarrageList = sortBarrages(danmuku);
+				var sortedBarrageList = sortBarrages(danmuku);
 				fillBarragePanel(sortedBarrageList);
+				colorPick();
 			},
 			// 控制音量和弹幕选项面板 
 			panel: function (a, b) {
@@ -546,6 +561,10 @@ var player = function () {
 				// 这个设置需要还原
 				console.log('end: nextBarrageIndex has set to 0');
 				nextBarrageIndex = 0;
+			},
+			// 更换弹幕颜色
+			colorPicker: function () {
+				colorPick();
 			}
 			
 		}
