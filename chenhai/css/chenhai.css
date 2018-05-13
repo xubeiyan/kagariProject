@@ -26,6 +26,12 @@ nav ul li{
 	display: inline-block;
 }
 
+nav li.mouseon {
+	background-color: #DDD;
+	cursor: pointer;
+	text-decoration: underline;
+}
+
 /* 页中内容 */
 main {
 	padding-left: 1em;
