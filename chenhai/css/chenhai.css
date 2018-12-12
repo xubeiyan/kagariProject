@@ -26,7 +26,7 @@ nav ul li{
 	display: inline-block;
 }
 
-nav li.mouseon {
+nav ul li:hover {
 	background-color: #DDD;
 	cursor: pointer;
 	text-decoration: underline;
