@@ -452,8 +452,9 @@ var player = function () {
 			} else {
 				req = new ActiveXObject("Microsoft.XMLHTTP");
 			}
-			req.open("POST", "backend/backend.php", true);
-			req.send(videoStr + "||" +barrageStr);
+			 
+			req.open("POST", `backend/backend.php?barrage=${videoStr}`, true);
+			req.send(barrageStr);
 			console.log(barrageStr);
 		},
 		// 显示当前弹幕颜色
